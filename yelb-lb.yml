@@ -1,5 +1,4 @@
-# Copied from https://raw.githubusercontent.com/lamw/vmware-pks-app-demo/master/yelb-lb.yaml
-# Minor modification from http://www.it20.info/2017/07/yelb-yet-another-sample-app/ to demo VMware PKS with K8S Load Balancer
+# This should work on Kubernetes deployments that have LoadBalancer support
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,7 +6,6 @@ metadata:
   labels:
     app: redis-server
     tier: cache
-  namespace: yelb
 spec:
   type: ClusterIP
   ports:
@@ -23,7 +21,6 @@ metadata:
   labels:
     app: yelb-db
     tier: backenddb
-  namespace: yelb
 spec:
   type: ClusterIP
   ports:
@@ -39,7 +36,6 @@ metadata:
   labels:
     app: yelb-appserver
     tier: middletier
-  namespace: yelb
 spec:
   type: ClusterIP
   ports:
@@ -55,7 +51,6 @@ metadata:
   labels:
     app: yelb-ui
     tier: frontend
-  namespace: yelb
 spec:
   type: LoadBalancer
   ports:
@@ -70,7 +65,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: yelb-ui
-  namespace: yelb
 spec:
   replicas: 1
   template:
@@ -81,7 +75,7 @@ spec:
     spec:
       containers:
       - name: yelb-ui
-        image: mreferre/yelb-ui:0.3
+        image:  mreferre/yelb-ui:0.3
         ports:
         - containerPort: 80
 ---
@@ -89,7 +83,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: redis-server
-  namespace: yelb
 spec:
   replicas: 1
   template:
@@ -108,7 +101,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: yelb-db
-  namespace: yelb
 spec:
   replicas: 1
   template:
@@ -119,7 +111,7 @@ spec:
     spec:
       containers:
       - name: yelb-db
-        image: mreferre/yelb-db:0.3
+        image:  mreferre/yelb-db:0.3
         ports:
         - containerPort: 5432
 ---
@@ -127,7 +119,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: yelb-appserver
-  namespace: yelb
 spec:
   replicas: 1
   template:
@@ -138,6 +129,7 @@ spec:
     spec:
       containers:
       - name: yelb-appserver
-        image: mreferre/yelb-appserver:0.3
+        image:  mreferre/yelb-appserver:0.4
         ports:
         - containerPort: 4567
+
