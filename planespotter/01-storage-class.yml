@@ -1,0 +1,22 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: thin-disk
+provisioner: kubernetes.io/vsphere-volume
+parameters:
+    diskformat: thin
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mysql-claim
+  namespace: planespotter
+  annotations:
+    volume.beta.kubernetes.io/storage-class: thin-disk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
