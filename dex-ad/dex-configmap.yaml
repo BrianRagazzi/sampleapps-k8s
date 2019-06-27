@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dex
+  namespace: auth-system
+data:
+  config.yaml: |
+    issuer: https://auth.k8s.inkubate.io/
+    web:
+      http: 0.0.0.0:5556
+    frontend:
+      theme: custom
+    telemetry:
+      http: 0.0.0.0:5558
+    staticClients:
+    - id: oidc-auth-client
+      redirectURIs:
+      - 'https://kubectl.k8s.inkubate.io/callback'
+      - 'http://dashboard.k8s.inkubate.io/oauth2/callback'
+      name: 'oidc-auth-client'
+      secret: ***********
+    connectors:
+    - type: ldap
+      id: ldap
+      name: LDAP
+      config:
+        host: ad.inkubate.io:389
+        insecureNoSSL: true
+        insecureSkipVerify: true
+        bindDN: cn=Administrator,cn=Users,dc=inkubate,dc=io
+        bindPW: '***********'
+        userSearch:
+          baseDN: cn=Users,dc=inkubate,dc=io
+          filter: "(objectClass=user)"
+          username: sAMAccountName
+          idAttr: sAMAccountName
+          emailAttr: sAMAccountName
+          nameAttr: displayName
+    oauth2:
+      skipApprovalScreen: true
+    storage:
+      type: kubernetes
+      config:
+        inCluster: true
