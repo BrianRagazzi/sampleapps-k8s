@@ -18,9 +18,9 @@ spec:
       containers:
       - name: windowswebserver
         imagePullPolicy: Always
-        image: harbor.haas-453.pez.pivotal.io/windows/aspnet-helloworld:3.5
+        image: harbor.pae.ragazzilab.com/windows/aspnet-helloworld:3.5
       imagePullSecrets:
-      - name: harbor453
+      - name: harbor
       tolerations:
       - key: "windows"
         operator: "Exists"
