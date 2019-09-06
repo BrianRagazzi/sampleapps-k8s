@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: unifi
+    deployment: unifi
+  name: unifi-service
+spec:
+  ports:
+  - port: 80
+    name: ui
+  - port: 10001
+    name: backend
+  - port: 6379
+    name: redis
+  type: LoadBalancer
+  selector:
+    app: unifi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: unifi
+    deployment: unifi
+  name: unifi
+spec:
+  containers:
+  - image: linuxserver/unifi-controller
+    name: unifi
+    ports:
+    - containerPort: 80
+      protocol: TCP
+    - containerPort: 3478
+      protocol: UDP
+    - containerPort: 10001
+      protocol: UDP
+    - containerPort: 8081
+      protocol: TCP
+    - containerPort: 8443
+      protocol: TCP
+    - containerPort: 8880
+      protocol: TCP
+    - containerPort: 6789
+      protocol: TCP

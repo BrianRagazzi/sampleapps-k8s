@@ -1,0 +1,46 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+      app: win-webserver
+  name: win-webserver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: win-webserver
+      name: win-webserver
+    spec:
+      containers:
+      - name: windowswebserver
+        image: stefanscherer/webserver-windows:latest
+        env:
+        - name: PORT
+          value: "80"
+        ports:
+        - name: http
+          containerPort: 80
+      nodeSelector:
+        kubernetes.io/os: windows
+      tolerations:
+      - key: "windows"
+        operator: "Equal"
+        value: "2019"
+        effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: win-webserver
+  labels:
+    app: win-webserver
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    app: win-webserver
+  type: NodePort
