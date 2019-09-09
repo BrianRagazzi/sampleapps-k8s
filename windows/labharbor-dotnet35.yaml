@@ -1,5 +1,3 @@
-# kubectl create secret docker-registry harbor453 --docker-server=harbor.haas-453.pez.pivotal.io --docker-username=admin --docker-password==VMware1! --docker-email=harbor@haas453.pez.pivotal.io
-
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
