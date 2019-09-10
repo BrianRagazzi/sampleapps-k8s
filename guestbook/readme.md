@@ -2,7 +2,7 @@
 
 ### If using a local, private docker repo
 1. Be sure your k8s workers trust the docker registry CA
-1. [Add a docker-registry secret] (https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#registry-secret-existing-credentials) *the example registry secret is named **harbor** *
+1. [Add a docker-registry secret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#registry-secret-existing-credentials) *the example registry secret is named **harbor** *
 1. Modify the image path in the guestbook-lb-labharbor.yaml to your registry
 
 ### Running the example
