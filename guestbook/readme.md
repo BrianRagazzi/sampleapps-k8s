@@ -6,11 +6,9 @@
 1. Modify the image path in the guestbook-lb-labharbor.yaml to your registry
 
 ### Running the example
-1. kubectl apply -f vsphere-sc.yml
-  * Creates the Storage Class
+1. kubectl apply -f vsphere-sc.yml *Creates the Storage Class*
 1. kubectl apply -f redis-master-claim.yml
-1. kubectl apply -f redis-slave-claim.yml
-  * Creates the pvc for the redis nodes
+1. kubectl apply -f redis-slave-claim.yml *Creates the pvc for the redis nodes*
 1. kubectl apply -f guestbook-lb.yml
   * guestbook-lb.yml to create the deployments and load-balancer service using images from Google
   * guestbook-lb-labharbor.yml to create the deployments and load-balancer service using images from private docker repo
