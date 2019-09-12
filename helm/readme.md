@@ -19,3 +19,17 @@
 * Optionally add DNS record for mediawiki.* to the LB address
 * run helm list to see deployment
 * run helm delete mediawiki to delete from kube cluster
+
+## Prometheus
+
+# helm install stable/prometheus-operator --name prometheus-operator --namespace monitoring
+# kubectl expose deploy prometheus-operator-operator --port=9090 --target-port=9090 --name=prometheus --selector=app=prometheus -n monitoring --type=LoadBalancer
+# kubectl expose deploy prometheus-operator-grafana --port=3000 --target-port=3000 --name=grafana --selector=app=grafana -n monitoring --type=LoadBalancer
+# kubectl expose svc prometheus-operator-alertmanager --port=9093 --target-port=9093 --name=alertmanager -n monitoring --type=LoadBalancer
+
+
+## Troubleshooting
+
+* kubectl create serviceaccount --namespace kube-system tiller
+* kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+* kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
