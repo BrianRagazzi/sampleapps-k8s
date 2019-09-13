@@ -26,7 +26,7 @@
 1. kubectl expose deploy prometheus-operator-operator --port=9090 --target-port=9090 --name=prometheus --selector=app=prometheus -n monitoring --type=LoadBalancer
 1. kubectl expose deploy prometheus-operator-grafana --port=3000 --target-port=3000 --name=grafana --selector=app=grafana -n monitoring --type=LoadBalancer
 
-...admin | prom-operator
+   admin | prom-operator
 1. kubectl expose svc prometheus-operator-alertmanager --port=9093 --target-port=9093 --name=alertmanager -n monitoring --type=LoadBalancer
 
 
