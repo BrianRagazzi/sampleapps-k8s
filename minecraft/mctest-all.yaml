@@ -1,0 +1,102 @@
+---
+apiVersion: v1
+data:
+  EULA: "TRUE"
+  VERSION: 1.12.2 # LATEST
+  FORGEVERSION: RECOMMENDED
+  TYPE: FORGE # VANILLA, FORGE, SPIGOT
+  SERVER_NAME: "MC on K8s"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: mctest-config
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: vsan
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: kubernetes.io/vsphere-volume
+parameters:
+  diskformat: thin
+  datastore: vsanDatastore
+  fstype: ext3
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-mctest
+  annotations:
+    volume.beta.kubernetes.io/storage-class: vsan
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+  storageClassName: vsan
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: mctest
+  name: mctest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: mctest
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: mctest
+    spec:
+      volumes:
+      - name: mctest-volume
+        persistentVolumeClaim:
+          claimName: pvc-mctest
+      containers:
+      - image: itzg/minecraft-server
+        name: mctest
+        envFrom:
+        - configMapRef:
+            name: mctest-config
+        resources: {}
+        ports:
+        - containerPort: 25565
+          name: main
+        readinessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        volumeMounts:
+          - mountPath: "/data"
+            name: mctest-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mctest-lb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 25565
+    protocol: TCP
+    targetPort: 25565
+  selector:
+    run: mctest
