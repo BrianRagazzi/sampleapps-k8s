@@ -2,71 +2,46 @@
 apiVersion: v1
 data:
   EULA: "true"
-  VERSION: LATEST #1.14.4 # 1.12.2
+  VERSION: 1.12.2 #LATEST #1.14.4 # 1.12.2
   FORGEVERSION: RECOMMENDED
   TYPE: SPIGOT # VANILLA, FORGE, SPIGOT
-  SERVER_NAME: "SpigotMC on K8s"
+  SERVER_NAME: "Skyisland"
   MEMORY: "1G"
   BUILD_FROM_SOURCE: "true" #Spigot
-  MOTD: "SpigotMC on K8s"
+  MOTD: "Skyisland - SpigotMC on K8s"
 kind: ConfigMap
 metadata:
   creationTimestamp: null
-  name: mctest-config
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: vsan
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
-provisioner: kubernetes.io/vsphere-volume
-parameters:
-  diskformat: thin
-  datastore: vsanDatastore
-  fstype: ext3
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: pvc-mctest
-  annotations:
-    volume.beta.kubernetes.io/storage-class: vsan
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 4Gi
-  storageClassName: vsan
+  name: skyisland-config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: mctest
-  name: mctest
+    run: skyisland
+  name: skyisland
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: mctest
+      run: skyisland
   strategy: {}
   template:
     metadata:
       labels:
-        run: mctest
+        run: skyisland
     spec:
       volumes:
-      - name: mctest-volume
-        persistentVolumeClaim:
-          claimName: pvc-mctest
+      - name: vol-nfs-skyisland
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/skyisland
       containers:
       - image: itzg/minecraft-server
-        name: mctest
+        name: skyisland
         envFrom:
         - configMapRef:
-            name: mctest-config
+            name: skyisland-config
         resources:
           requests:
             memory: "1Gi"
@@ -80,7 +55,7 @@ spec:
             - mcstatus
             - localhost
             - ping
-          initialDelaySeconds: 90
+          initialDelaySeconds: 240
           periodSeconds: 5
         livenessProbe:
           exec:
@@ -88,16 +63,16 @@ spec:
             - mcstatus
             - localhost
             - ping
-          initialDelaySeconds: 90
+          initialDelaySeconds: 240
           periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: mctest-volume
+            name: vol-nfs-skyisland
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mctest-lb
+  name: skyisland-lb
 spec:
   type: LoadBalancer
   ports:
@@ -105,4 +80,4 @@ spec:
     protocol: TCP
     targetPort: 25565
   selector:
-    run: mctest
+    run: skyisland

@@ -5,71 +5,46 @@ data:
   VERSION: LATEST #1.14.4 # 1.12.2
   FORGEVERSION: RECOMMENDED
   TYPE: SPIGOT # VANILLA, FORGE, SPIGOT
-  SERVER_NAME: "SpigotMC on K8s"
-  MEMORY: "1G"
+  SERVER_NAME: "survive2"
+  MEMORY: "2G"
   BUILD_FROM_SOURCE: "true" #Spigot
-  MOTD: "SpigotMC on K8s"
+  MOTD: "survive2 - SpigotMC on K8s"
 kind: ConfigMap
 metadata:
   creationTimestamp: null
-  name: mctest-config
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: vsan
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
-provisioner: kubernetes.io/vsphere-volume
-parameters:
-  diskformat: thin
-  datastore: vsanDatastore
-  fstype: ext3
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: pvc-mctest
-  annotations:
-    volume.beta.kubernetes.io/storage-class: vsan
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 4Gi
-  storageClassName: vsan
+  name: survive2-config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: mctest
-  name: mctest
+    run: survive2
+  name: survive2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: mctest
+      run: survive2
   strategy: {}
   template:
     metadata:
       labels:
-        run: mctest
+        run: survive2
     spec:
       volumes:
-      - name: mctest-volume
-        persistentVolumeClaim:
-          claimName: pvc-mctest
+      - name: vol-nfs-survive2
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/survive2
       containers:
       - image: itzg/minecraft-server
-        name: mctest
+        name: survive2
         envFrom:
         - configMapRef:
-            name: mctest-config
+            name: survive2-config
         resources:
           requests:
-            memory: "1Gi"
+            memory: "2Gi"
             cpu: "1" # "500m"
         ports:
         - containerPort: 25565
@@ -80,7 +55,7 @@ spec:
             - mcstatus
             - localhost
             - ping
-          initialDelaySeconds: 90
+          initialDelaySeconds: 240
           periodSeconds: 5
         livenessProbe:
           exec:
@@ -88,16 +63,16 @@ spec:
             - mcstatus
             - localhost
             - ping
-          initialDelaySeconds: 90
+          initialDelaySeconds: 240
           periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: mctest-volume
+            name: vol-nfs-survive2
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mctest-lb
+  name: survive2-lb
 spec:
   type: LoadBalancer
   ports:
@@ -105,4 +80,4 @@ spec:
     protocol: TCP
     targetPort: 25565
   selector:
-    run: mctest
+    run: survive2
