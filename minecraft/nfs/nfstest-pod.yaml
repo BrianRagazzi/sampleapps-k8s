@@ -1,0 +1,34 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nfstest
+  name: nfstest
+spec:
+  volumes:
+  - name: vol-nfs-skyisland
+    nfs:
+      server: 192.168.96.20
+      path: /nfs/kubevols/skyisland
+  containers:
+  - image: itzg/minecraft-server
+    name: mctest
+    envFrom:
+    - configMapRef:
+        name: nfstest-config
+    # env:
+    # - name: EULA
+    #   value: "TRUE"
+    # - name: TYPE
+    #   value: "FORGE"
+    resources: {}
+    ports:
+    - containerPort: 25565
+      name: main
+    volumeMounts:
+      - mountPath: "/data"
+        name: vol-nfs-skyisland
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always

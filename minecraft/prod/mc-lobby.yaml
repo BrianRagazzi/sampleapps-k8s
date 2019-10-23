@@ -2,82 +2,82 @@
 apiVersion: v1
 data:
   EULA: "true"
-  VERSION: 1.12.2 #LATEST #1.14.4 # 1.12.2
+  VERSION: LATEST #1.14.4 # 1.12.2
   FORGEVERSION: RECOMMENDED
   TYPE: SPIGOT # VANILLA, FORGE, SPIGOT
-  SERVER_NAME: "mansion"
+  SERVER_NAME: "lobby"
   MEMORY: "1G"
   BUILD_FROM_SOURCE: "true" #Spigot
-  MOTD: "mansion - SpigotMC on K8s"
+  MOTD: "lobby - SpigotMC on K8s"
+  ONLINE_MODE: "false" # false for bungeecord
 kind: ConfigMap
 metadata:
   creationTimestamp: null
-  name: mansion-config
+  name: lobby-config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: mansion
-  name: mansion
+    run: lobby
+  name: lobby
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: mansion
+      run: lobby
   strategy: {}
   template:
     metadata:
       labels:
-        run: mansion
+        run: lobby
     spec:
       volumes:
-      - name: vol-nfs-mansion
+      - name: vol-nfs-lobby
         nfs:
           server: 192.168.96.20
-          path: /nfs/kubevols/mansion
+          path: /nfs/kubevols/lobby
       containers:
       - image: itzg/minecraft-server
-        name: mansion
+        name: lobby
         envFrom:
         - configMapRef:
-            name: mansion-config
+            name: lobby-config
         resources:
           requests:
             memory: "1Gi"
-            cpu: "1" # "500m"
         ports:
         - containerPort: 25565
           name: main
-        # readinessProbe:
-        #   exec:
-        #     command:
-        #     - mcstatus
-        #     - localhost
-        #     - ping
-        #   initialDelaySeconds: 240
-        #   periodSeconds: 5
-        # livenessProbe:
-        #   exec:
-        #     command:
-        #     - mcstatus
-        #     - localhost
-        #     - ping
-        #   initialDelaySeconds: 240
-        #   periodSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 240
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 240
+          periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: vol-nfs-mansion
+            name: vol-nfs-lobby
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mansion-lb
+  name: lobby-svc
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - port: 25565
     protocol: TCP
     targetPort: 25565
   selector:
-    run: mansion
+    run: lobby

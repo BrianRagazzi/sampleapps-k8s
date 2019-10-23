@@ -1,0 +1,82 @@
+---
+apiVersion: v1
+data:
+  EULA: "true"
+  VERSION: 1.12.2 #LATEST #1.14.4 # 1.12.2
+  FORGEVERSION: RECOMMENDED
+  TYPE: SPIGOT # VANILLA, FORGE, SPIGOT
+  SERVER_NAME: "penguin"
+  MEMORY: "1G"
+  BUILD_FROM_SOURCE: "true" #Spigot
+  MOTD: "penguin - SpigotMC on K8s"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: penguin-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: penguin
+  name: penguin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: penguin
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: penguin
+    spec:
+      volumes:
+      - name: vol-nfs-penguin
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/penguin
+      containers:
+      - image: itzg/minecraft-server
+        name: penguin
+        envFrom:
+        - configMapRef:
+            name: penguin-config
+        resources:
+          requests:
+            memory: "1Gi"
+        ports:
+        - containerPort: 25565
+          name: main
+        readinessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 240
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 240
+          periodSeconds: 5
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-nfs-penguin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penguin-svc
+spec:
+  type: ClusterIP
+  ports:
+  - port: 25565
+    protocol: TCP
+    targetPort: 25565
+  selector:
+    run: penguin

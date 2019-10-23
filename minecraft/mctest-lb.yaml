@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mctest-lb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 25565
+    protocol: TCP
+    targetPort: 25565
+  selector:
+    run: mctest

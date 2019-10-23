@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+data:
+  MEMORY: "512m"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: bungeecord-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: bungeecord
+  name: bungeecord
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: bungeecord
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: bungeecord
+    spec:
+      volumes:
+      - name: vol-nfs-bungeecord
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/bungeecord
+      containers:
+      - image: itzg/bungeecord
+        name: bungeecord
+        envFrom:
+        - configMapRef:
+            name: bungeecord-config
+        resources:
+          requests:
+            memory: "512Mi"
+        volumeMounts:
+          - mountPath: "/server"
+            name: vol-nfs-bungeecord
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bungeecord-lb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 25565
+    protocol: TCP
+    targetPort: 25565
+  selector:
+    run: bungeecord
