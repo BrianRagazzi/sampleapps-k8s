@@ -1,0 +1,114 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vol-nfs-unifi
+  labels:
+    type: nfs
+    app: unifi
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.96.20
+    path: /nfs/kubevols/unificonfig
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vol-nfs-unifi-claim
+spec:
+  selector:
+    matchLabels:
+      app: unifi
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: unifi
+  name: unifi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unifi
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: unifi
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      volumes:
+      - name: vol-nfs-unifi
+        persistentVolumeClaim:
+          claimName: vol-nfs-unifi-claim
+      containers:
+      - image: linuxserver/unifi-controller
+        name: controller
+        resources:
+          requests:
+            memory: "1Gi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8443
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        volumeMounts:
+          - mountPath: "/config"
+            name: vol-nfs-unifi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-lb
+spec:
+  type: LoadBalancer
+  # This is invalid because it mixees both UDP and TCP ports on one load-balancer
+  ports:
+  - port: 3478
+    name: unifi-3478
+    protocol: UDP
+    targetPort: 3478
+  - port: 10001
+    name: ap-discovery
+    protocol: UDP
+    targetPort: 10001
+  - port: 6789
+    name: throughputtest
+    protocol: TCP
+    targetPort: 6789
+  - port: 8080
+    name: unifi-8080
+    protocol: TCP
+    targetPort: 8080
+  - port: 8081
+    name: unifi-8081
+    protocol: TCP
+    targetPort: 8081
+  - port: 443
+    name: webapp
+    protocol: TCP
+    targetPort: 8443
+  - port: 8843
+    name: unifi-8843
+    protocol: TCP
+    targetPort: 8843
+  - port: 8880
+    name: unifi-8880
+    protocol: TCP
+    targetPort: 8880
+  selector:
+    app: unifi
