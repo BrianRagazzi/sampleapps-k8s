@@ -4,45 +4,56 @@ data:
   EULA: "true"
   VERSION: LATEST #1.14.4 # 1.12.2
   FORGEVERSION: RECOMMENDED
-  TYPE: PAPER # VANILLA, FORGE, SPIGOT
-  SERVER_NAME: "survive"
+  TYPE: PAPER # VANILLA, FORGE, SPIGOT, PAPER
+  SERVER_NAME: "survive4"
   MEMORY: "2G"
   BUILD_FROM_SOURCE: "true" #Spigot
-  MOTD: "survive - PaperMC on K8s"
+  MOTD: "survive4 - PaperMC on K8s"
   ONLINE_MODE: "false" # false for bungeecord
 kind: ConfigMap
 metadata:
   creationTimestamp: null
-  name: survive-config
+  name: survive4-config
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vol-vsan-survive4-claim
+spec:
+  storageClassName: vsan
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: survive
-  name: survive
+    run: survive4
+  name: survive4
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: survive
+      run: survive4
   strategy: {}
   template:
     metadata:
       labels:
-        run: survive
+        run: survive4
     spec:
       volumes:
-      - name: vol-nfs-survive
-        nfs:
-          server: 192.168.96.20
-          path: /nfs/kubevols/survive
+      - name: vol-vsan-survive4
+        persistentVolumeClaim:
+          claimName: vol-vsan-survive4-claim
       containers:
       - image: itzg/minecraft-server
-        name: survive
+        name: survive4
         envFrom:
         - configMapRef:
-            name: survive-config
+            name: survive4-config
         resources:
           requests:
             memory: "2Gi"
@@ -67,22 +78,22 @@ spec:
           periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: vol-nfs-survive
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: survive-lb
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    name: dynmap
-    protocol: TCP
-    targetPort: 8123
-  - port: 25565
-    name: minecraft
-    protocol: TCP
-    targetPort: 25565
-  selector:
-    run: survive
+            name: vol-vsan-survive4
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: survive4-lb
+# spec:
+#   type: LoadBalancer
+#   ports:
+#   - port: 80
+#     name: dynmap
+#     protocol: TCP
+#     targetPort: 8123
+#   - port: 25565
+#     name: minecraft
+#     protocol: TCP
+#     targetPort: 25565
+#   selector:
+#     run: survive4

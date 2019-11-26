@@ -4,7 +4,7 @@ data:
   EULA: "true"
   VERSION: LATEST #1.14.4 # 1.12.2
   FORGEVERSION: RECOMMENDED
-  TYPE: SPIGOT # VANILLA, FORGE, SPIGOT
+  TYPE: PAPER # VANILLA, FORGE, SPIGOT
   SERVER_NAME: "survive"
   MEMORY: "2G"
   BUILD_FROM_SOURCE: "true" #Spigot
@@ -101,21 +101,21 @@ spec:
         volumeMounts:
           - mountPath: "/data"
             name: vol-nfs-survive
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: survive-lb
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    name: dynmap
-    protocol: TCP
-    targetPort: 8123
-  - port: 25565
-    name: minecraft
-    protocol: TCP
-    targetPort: 25565
-  selector:
-    run: survive
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: survive-lb
+# spec:
+#   type: LoadBalancer
+#   ports:
+#   - port: 80
+#     name: dynmap
+#     protocol: TCP
+#     targetPort: 8123
+#   - port: 25565
+#     name: minecraft
+#     protocol: TCP
+#     targetPort: 25565
+#   selector:
+#     run: survive
