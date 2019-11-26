@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vol-nfs-lobby
+  labels:
+    type: nfs
+    mcserver: lobby
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.96.20
+    path: /nfs/kubevols/lobby
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vol-nfs-lobby-claim
+spec:
+  selector:
+    matchLabels:
+      mcserver: lobby
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vol-nfs-survive
+  labels:
+    type: nfs
+    mcserver: survive
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.96.20
+    path: /nfs/kubevols/survive
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vol-nfs-survive-claim
+spec:
+  selector:
+    matchLabels:
+      mcserver: survive
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       storage: 5Gi 

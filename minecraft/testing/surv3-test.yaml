@@ -1,0 +1,121 @@
+---
+apiVersion: v1
+data:
+  EULA: "true"
+  VERSION: LATEST #1.14.4 # 1.12.2
+  FORGEVERSION: RECOMMENDED
+  TYPE: SPIGOT # VANILLA, FORGE, SPIGOT
+  SERVER_NAME: "survive3"
+  MEMORY: "2G"
+  BUILD_FROM_SOURCE: "true" #Spigot
+  MOTD: "survive3 - SpigotMC on K8s"
+  ONLINE_MODE: "false" # false for bungeecord
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: survive3-config
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vol-nfs-survive3
+  labels:
+    type: nfs
+    mcserver: survive3
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.96.20
+    path: /nfs/kubevols/survive3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vol-nfs-survive3-claim
+spec:
+  selector:
+    matchLabels:
+      mcserver: survive3
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: survive3
+  name: survive3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: survive3
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: survive3
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      volumes:
+      - name: vol-nfs-survive3
+        persistentVolumeClaim:
+          claimName: vol-nfs-survive3-claim
+      containers:
+      - image: itzg/minecraft-server
+        name: survive3
+        envFrom:
+        - configMapRef:
+            name: survive3-config
+        resources:
+          requests:
+            memory: "2Gi"
+        ports:
+        - containerPort: 25565
+          name: main
+        readinessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 240
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 240
+          periodSeconds: 5
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-nfs-survive3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: survive3-lb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    name: dynmap
+    protocol: TCP
+    targetPort: 8123
+  - port: 25565
+    name: minecraft
+    protocol: TCP
+    targetPort: 25565
+  selector:
+    run: survive3
