@@ -1,0 +1,69 @@
+---
+apiVersion: v1
+data:
+  APP_SERVER_PORT: "27015"
+  APP_SERVER_MAXPLAYERS: "24"
+  APP_SERVER_NAME: "TF2 on K8s"
+  # APP_SERVER_TOKEN:
+  # APP_SERVER_CONTACT:
+  # APP_RCON_PASSWORD:
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: tf2-config
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: tf2
+  name: tf2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: tf2
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: tf2
+    spec:
+      securityContext:
+        runAsUser: 501
+        runAsGroup: 1000
+      volumes:
+      - name: vol-nfs-tf2
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/tf2
+      containers:
+      - image: gameservers/teamfortress2:latest
+        name: tf2
+        envFrom:
+        - configMapRef:
+            name: tf2-config
+        resources:
+          requests:
+            memory: "1Gi"
+        ports:
+        - containerPort: 27015
+          name: main
+        volumeMounts:
+          - mountPath: "/home/steamsrv/tf2"
+            name: vol-nfs-tf2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tf2-lb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 27015
+    name: tf2
+    protocol: TCP
+    targetPort: 27015
+  selector:
+    run: tf2
