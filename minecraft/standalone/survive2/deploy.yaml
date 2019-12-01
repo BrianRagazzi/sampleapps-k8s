@@ -23,15 +23,14 @@ spec:
         persistentVolumeClaim:
           claimName: vol-nfs-survive2-claim
       - name: vol-backup-survive2
-        nfs:
-          server: 192.168.96.21
-          path: /nfs/kubevols/backups/mcservers/survive2
+        persistentVolumeClaim:
+          claimName: vol-backup-survive2-claim
       containers:
       - image: itzg/minecraft-server
         name: survive2
-        # securityContext:
-        #   runAsUser: 1000
-        #   runAsGroup: 1000
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
         envFrom:
         - configMapRef:
             name: survive2-config
@@ -60,11 +59,26 @@ spec:
         volumeMounts:
           - mountPath: "/data"
             name: vol-nfs-survive2
-      # - image: itzg/mc-backup
+      - name: cloudcmd
+        image: coderaiser/cloudcmd
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-nfs-survive2
+        ports:
+        - containerPort: 8000
+          name: cloudcmd
+        args:
+          - --root
+          - /data
+          - --name
+          - survive
+          - --one-file-panel
+        securityContext:
+          runAsUser: 1000
+      # - image: itzg/mc-backup:latest
       #   name: backup
       #   securityContext:
       #     runAsUser: 1000
-      #     runAsGroup: 1000
       #   envFrom:
       #   - configMapRef:
       #       name: survive2-config

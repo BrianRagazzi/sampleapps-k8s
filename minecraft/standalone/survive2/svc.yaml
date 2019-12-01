@@ -13,5 +13,9 @@ spec:
     name: minecraft
     protocol: TCP
     targetPort: 25565
+  - port: 8000
+    name: cloudcmd
+    protocol: TCP
+    targetPort: 8000
   selector:
     run: survive2
