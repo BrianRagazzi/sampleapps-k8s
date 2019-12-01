@@ -29,9 +29,9 @@ spec:
       containers:
       - image: itzg/minecraft-server
         name: survive2
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
+        # securityContext:
+        #   runAsUser: 1000
+        #   runAsGroup: 1000
         envFrom:
         - configMapRef:
             name: survive2-config
@@ -60,16 +60,17 @@ spec:
         volumeMounts:
           - mountPath: "/data"
             name: vol-nfs-survive2
-      - image: itzg/mc-backup
-        name: backup
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
-        envFrom:
-        - configMapRef:
-            name: survive2-config
-        volumeMounts:
-          - mountPath: "/data"
-            name: vol-nfs-survive2
-          - mountPath: "/backups"
-            name: vol-backup-survive2
+      # - image: itzg/mc-backup
+      #   name: backup
+      #   securityContext:
+      #     runAsUser: 1000
+      #     runAsGroup: 1000
+      #   envFrom:
+      #   - configMapRef:
+      #       name: survive2-config
+      #   volumeMounts:
+      #     - mountPath: "/data"
+      #       name: vol-nfs-survive2
+      #       readOnly: true
+      #     - mountPath: "/backups"
+      #       name: vol-backup-survive2
