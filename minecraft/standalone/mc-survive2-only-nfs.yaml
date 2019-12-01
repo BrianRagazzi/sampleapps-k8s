@@ -103,21 +103,21 @@ spec:
         volumeMounts:
           - mountPath: "/data"
             name: vol-nfs-survive2
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: survive2-lb
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    name: dynmap
-    protocol: TCP
-    targetPort: 8123
-  - port: 25565
-    name: minecraft
-    protocol: TCP
-    targetPort: 25565
-  selector:
-    run: survive2
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: survive2-lb
+# spec:
+#   type: LoadBalancer
+#   ports:
+#   - port: 80
+#     name: dynmap
+#     protocol: TCP
+#     targetPort: 8123
+#   - port: 25565
+#     name: minecraft
+#     protocol: TCP
+#     targetPort: 25565
+#   selector:
+#     run: survive2

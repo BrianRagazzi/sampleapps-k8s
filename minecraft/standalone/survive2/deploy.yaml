@@ -1,20 +1,3 @@
----
-apiVersion: v1
-data:
-  EULA: "true"
-  VERSION: LATEST #1.14.4 # 1.12.2
-  FORGEVERSION: RECOMMENDED
-  TYPE: SPIGOT # VANILLA, FORGE, SPIGOT
-  SERVER_NAME: "survive2"
-  MEMORY: "2G"
-  BUILD_FROM_SOURCE: "true" #Spigot
-  MOTD: "survive2 - SpigotMC on K8s"
-  ONLINE_MODE: "false" # false for bungeecord
-kind: ConfigMap
-metadata:
-  creationTimestamp: null
-  name: survive2-config
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,14 +15,22 @@ spec:
       labels:
         run: survive2
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       volumes:
       - name: vol-nfs-survive2
+        persistentVolumeClaim:
+          claimName: vol-nfs-survive2-claim
+      - name: vol-backup-survive2
         nfs:
-          server: 192.168.96.20
-          path: /nfs/kubevols/survive2
+          server: 192.168.96.21
+          path: /nfs/kubevols/backups/mcservers/survive2
       containers:
       - image: itzg/minecraft-server
         name: survive2
+        securityContext:
+          runAsUser: 1000
         envFrom:
         - configMapRef:
             name: survive2-config
@@ -68,21 +59,13 @@ spec:
         volumeMounts:
           - mountPath: "/data"
             name: vol-nfs-survive2
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: survive2-lb
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    name: dynmap
-    protocol: TCP
-    targetPort: 8123
-  - port: 25565
-    name: minecraft
-    protocol: TCP
-    targetPort: 25565
-  selector:
-    run: survive2
+      - image: itzg/mc-backup
+        name: backup
+        envFrom:
+        - configMapRef:
+            name: survive2-config
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-nfs-survive2
+          - mountPath: "/backups"
+            name: vol-backup-survive2

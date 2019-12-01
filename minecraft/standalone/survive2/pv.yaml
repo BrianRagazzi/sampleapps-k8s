@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vol-nfs-survive2
+  labels:
+    type: nfs
+    mcserver: survive2
+spec:
+  storageClassName: nfs-survive2
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.96.20
+    path: /nfs/kubevols/survive2
