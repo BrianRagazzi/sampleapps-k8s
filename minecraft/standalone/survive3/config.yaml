@@ -1,0 +1,24 @@
+apiVersion: v1
+data:
+  EULA: "true"
+  VERSION: LATEST #1.14.4 # 1.12.2
+  FORGEVERSION: RECOMMENDED
+  TYPE: PAPER # VANILLA, FORGE, SPIGOT, PAPER
+  SERVER_NAME: "survive3"
+  MEMORY: "2G"
+  BUILD_FROM_SOURCE: "true" #Spigot
+  MOTD: "survive3 - PaperMC on K8s"
+  ONLINE_MODE: "false" # false for bungeecord
+  SRC_DIR: /data #Backup Source Folder
+  BACKUP_INTERVAL: "60"
+  BACKUP_NAME: world
+  INITIAL_DELAY: "5m" #Delay for Backups
+  PRUNE_BACKUP_DAYS: "14"
+  RCON_PORT: "25575"
+  EXCLUDES: cache,logs,tiles
+  BACKUP_METHOD: tar
+  DEBUG: "true" #Backup
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: survive3-config

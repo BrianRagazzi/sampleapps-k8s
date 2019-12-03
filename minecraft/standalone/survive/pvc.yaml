@@ -3,9 +3,11 @@ kind: PersistentVolumeClaim
 metadata:
   name: vol-nfs-survive-claim
 spec:
+  storageClassName: nfs-survive
   selector:
     matchLabels:
       mcserver: survive
+      type: nfs
   accessModes:
   - ReadWriteOnce
   resources:

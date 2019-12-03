@@ -68,7 +68,38 @@ spec:
       - name: vol-vsan-survive3
         persistentVolumeClaim:
           claimName: vol-vsan-survive3-claim
+      - name: vol-backup-survive3
+        nfs:
+          server: 192.168.96.21
+          path: /nfs/kubevols/backups/mcservers/survive3
       containers:
+      - name: cloudcmd
+        image: coderaiser/cloudcmd
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-vsan-survive3
+        ports:
+        - containerPort: 8000
+          name: cloudcmd
+        args:
+          - --root
+          - /data
+          - --name
+          - survive
+          - --one-file-panel
+      - image: itzg/mc-backup:latest
+        name: backup
+        securityContext:
+          runAsUser: 1000
+        envFrom:
+        - configMapRef:
+            name: survive3-config
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-vsan-survive3
+            readOnly: true
+          - mountPath: "/backups"
+            name: vol-backup-survive3
       - image: itzg/minecraft-server
         name: survive3
         envFrom:
@@ -99,21 +130,21 @@ spec:
         volumeMounts:
           - mountPath: "/data"
             name: vol-vsan-survive3
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: survive3-lb
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    name: dynmap
-    protocol: TCP
-    targetPort: 8123
-  - port: 25565
-    name: minecraft
-    protocol: TCP
-    targetPort: 25565
-  selector:
-    run: survive3
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: survive3-lb
+# spec:
+#   type: LoadBalancer
+#   ports:
+#   - port: 80
+#     name: dynmap
+#     protocol: TCP
+#     targetPort: 8123
+#   - port: 25565
+#     name: minecraft
+#     protocol: TCP
+#     targetPort: 25565
+#   selector:
+#     run: survive3

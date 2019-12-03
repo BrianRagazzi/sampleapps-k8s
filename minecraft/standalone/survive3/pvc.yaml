@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vol-nfs-survive3-claim
+spec:
+  storageClassName: nfs-survive3
+  selector:
+    matchLabels:
+      mcserver: survive3
+      type: nfs
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vol-backup-survive3-claim
+spec:
+  selector:
+    matchLabels:
+      mcserver: survive3
+      type: backup
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       storage: 5Gi

@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: vol-nfs-survive2
+  name: vol-nfs-survive3
   labels:
     type: nfs
-    mcserver: survive2
+    mcserver: survive3
 spec:
-  storageClassName: nfs-survive2
+  storageClassName: nfs-survive3
   capacity:
     storage: 5Gi
   accessModes:
@@ -15,15 +15,15 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: 192.168.96.20
-    path: /nfs/kubevols/survive2
+    path: /nfs/kubevols/survive3
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: vol-backup-survive2
+  name: vol-backup-survive3
   labels:
     type: backup
-    mcserver: survive2
+    mcserver: survive3
 spec:
   capacity:
     storage: 5Gi
@@ -32,6 +32,6 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: 192.168.96.21
-    path: /nfs/kubevols/backups/mcservers/survive2
+    path: /nfs/kubevols/backups/mcservers/survive3
     # server: 192.168.96.20
-    # path: /nfs/kubevols/backup/survive2
+    # path: /nfs/kubevols/backup/survive3

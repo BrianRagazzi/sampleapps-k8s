@@ -2,38 +2,38 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: survive2
-  name: survive2
+    run: survive3
+  name: survive3
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: survive2
+      run: survive3
   strategy: {}
   template:
     metadata:
       labels:
-        run: survive2
+        run: survive3
     spec:
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
       volumes:
-      - name: vol-nfs-survive2
+      - name: vol-nfs-survive3
         persistentVolumeClaim:
-          claimName: vol-nfs-survive2-claim
-      # - name: vol-backup-survive2
-      #   persistentVolumeClaim:
-      #     claimName: vol-backup-survive2-claim
+          claimName: vol-nfs-survive3-claim
+      - name: vol-backup-survive3
+        persistentVolumeClaim:
+          claimName: vol-backup-survive3-claim
       containers:
       - image: itzg/minecraft-server
-        name: survive2
+        name: survive3
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
         envFrom:
         - configMapRef:
-            name: survive2-config
+            name: survive3-config
         resources:
           requests:
             memory: "2Gi"
@@ -58,12 +58,12 @@ spec:
           periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: vol-nfs-survive2
+            name: vol-nfs-survive3
       - name: cloudcmd
         image: coderaiser/cloudcmd
         volumeMounts:
           - mountPath: "/data"
-            name: vol-nfs-survive2
+            name: vol-nfs-survive3
         ports:
         - containerPort: 8000
           name: cloudcmd
@@ -75,16 +75,17 @@ spec:
           - --one-file-panel
         securityContext:
           runAsUser: 1000
-      # - image: itzg/mc-backup:latest
-      #   name: backup
-      #   securityContext:
-      #     runAsUser: 1000
-      #   envFrom:
-      #   - configMapRef:
-      #       name: survive2-config
-      #   volumeMounts:
-      #     - mountPath: "/data"
-      #       name: vol-nfs-survive2
-      #       readOnly: true
-      #     - mountPath: "/backups"
-      #       name: vol-backup-survive2
+      - image: harbor.pae.ragazzilab.com/library/mc-backup:1.0.3
+        name: backup
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        envFrom:
+        - configMapRef:
+            name: survive3-config
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-nfs-survive3
+            readOnly: true
+          - mountPath: "/backups"
+            name: vol-backup-survive3

@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+data:
+  EULA: "true"
+  VERSION: 1.12.2 #1.14.4 # 1.12.2
+  FORGEVERSION: 14.23.5.2838
+  TYPE: FORGE # VANILLA, FORGE, SPIGOT
+  SERVER_NAME: "pixelmon"
+  MEMORY: "2G"
+  BUILD_FROM_SOURCE: "true" #Spigot
+  MOTD: "pixelmon - Forge on K8s"
+  ONLINE_MODE: "false" # false for bungeecord
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: pixelmon-config

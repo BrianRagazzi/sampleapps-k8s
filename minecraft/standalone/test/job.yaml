@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backup-survive3
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+      - name: vol-nfs-survive3
+        persistentVolumeClaim:
+          claimName: vol-nfs-survive3-claim
+      - name: vol-backup-survive3
+        persistentVolumeClaim:
+          claimName: vol-backup-survive3-claim
+      containers:
+      - image: harbor.pae.ragazzilab.com/library/mc-backup:1.0.3
+        name: backup
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        envFrom:
+        - configMapRef:
+            name: survive3-config
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-nfs-survive3
+            readOnly: true
+          - mountPath: "/backups"
+            name: vol-backup-survive3
