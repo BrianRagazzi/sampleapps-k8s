@@ -10,8 +10,8 @@ spec:
   volumes:
   - name: vol-nfs-survive3
     nfs:
-      server: 192.168.96.20
-      path: /nfs/kubevols/survive3
+      server: storage.ragazzilab.com
+      path: /exports/kubevols/survive3
   - name: vol-backup-survive3
     nfs:
       server: 192.168.96.21

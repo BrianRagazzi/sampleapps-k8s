@@ -14,24 +14,22 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: 192.168.96.20
-    path: /nfs/kubevols/survive2
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: vol-backup-survive2
-  labels:
-    type: backup
-    mcserver: survive2
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: 192.168.96.21
-    path: /nfs/kubevols/backups/mcservers/survive2
-    # server: 192.168.96.20
-    # path: /nfs/kubevols/backup/survive2
+    server: storage.ragazzilab.com
+    path: /exports/kubevols/survive2
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: vol-backup-survive2
+#   labels:
+#     type: backup
+#     mcserver: survive2
+# spec:
+#   capacity:
+#     storage: 5Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Retain
+#   nfs:
+#     server: 192.168.96.21
+#     path: /nfs/kubevols/backups/mcservers/survive2
