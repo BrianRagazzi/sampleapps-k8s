@@ -5,6 +5,7 @@ metadata:
   name: pixelmon-lb
 spec:
   type: LoadBalancer
+  loadBalancerIP: 192.168.105.89
   ports:
   - port: 80
     name: dynmap
@@ -17,6 +18,6 @@ spec:
   - port: 8000
     name: cloudcmd
     protocol: TCP
-    targetPort: 8000    
+    targetPort: 8000
   selector:
     run: pixelmon
