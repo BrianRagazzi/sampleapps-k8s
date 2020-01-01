@@ -22,7 +22,7 @@ spec:
       volumes:
       - name: vol-nfs-pixelmon
         nfs:
-          server: storage.ragazzilab.com
+          server: nfshost.ragazzilab.com
           path: /exports/kubevols/pixelmon
       containers:
       - image: itzg/minecraft-server

@@ -1,11 +1,4 @@
 ---
-apiVersion: v1
-data:
-  MOTD: "TShock"
-kind: ConfigMap
-metadata:
-  name: tshock-config
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,17 +17,17 @@ spec:
         run: tshock
     spec:
       securityContext:
-        runAsUser: 501
+        runAsUser: 1000
         runAsGroup: 1000
       volumes:
       - name: vol-nfs-tshock
         nfs:
-          server: 192.168.96.20
-          path: /nfs/kubevols/terraria/world
+          server: storage.ragazzilab.com
+          path: /exports/kubevols/terraria/world
       containers:
       - image: ryshe/terraria:latest
         name: tshock
-        args: ["-world /world/world.wld"]
+        args: ["-world", "/world/world.wld"]
         envFrom:
         - configMapRef:
             name: tshock-config
@@ -47,17 +40,3 @@ spec:
         volumeMounts:
           - mountPath: "/world"
             name: vol-nfs-tshock
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: tshock-lb
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 7777
-    name: terraria
-    protocol: TCP
-    targetPort: 7777
-  selector:
-    run: tshock

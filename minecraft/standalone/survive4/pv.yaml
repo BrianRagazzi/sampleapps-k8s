@@ -14,7 +14,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: storage.ragazzilab.com
+    server: nfshost.ragazzilab.com
     path: /exports/kubevols/survive4
 # ---
 # apiVersion: v1
