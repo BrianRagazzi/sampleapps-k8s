@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: vol-vsan-survive2-claim
+  name: vol-vsan-survive1-claim
 spec:
   storageClassName: vsan
   accessModes:
   - ReadWriteOnce
   resources:
      requests:
-       storage: 15Gi
+       storage: 10Gi

@@ -5,20 +5,20 @@ data:
   VERSION: LATEST #1.14.4 # 1.12.2
   FORGEVERSION: RECOMMENDED
   TYPE: PAPER # VANILLA, FORGE, SPIGOT, PAPER
-  SERVER_NAME: "survive4"
+  SERVER_NAME: "survive5"
   MEMORY: "2G"
-  BUILD_FROM_SOURCE: "true" #Spigot
-  MOTD: "survive4 - PaperMC on K8s"
+  BUILD_FROM_SOURCE: "false" #Spigot
+  MOTD: "survive5 - PaperMC on K8s"
   ONLINE_MODE: "false" # false for bungeecord
 kind: ConfigMap
 metadata:
   creationTimestamp: null
-  name: survive4-config
+  name: survive5-config
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: vol-vsan-survive4-claim
+  name: vol-vsan-survive5-claim
 spec:
   storageClassName: vsan
   accessModes:
@@ -31,29 +31,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: survive4
-  name: survive4
+    run: survive5
+  name: survive5
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: survive4
+      run: survive5
   strategy: {}
   template:
     metadata:
+      annotations:
+        backup.velero.io/backup-volumes: vol-vsan-survive5
       labels:
-        run: survive4
+        run: survive5
     spec:
       volumes:
-      - name: vol-vsan-survive4
+      - name: vol-vsan-survive5
         persistentVolumeClaim:
-          claimName: vol-vsan-survive4-claim
+          claimName: vol-vsan-survive5-claim
       containers:
       - image: itzg/minecraft-server
-        name: survive4
+        name: survive5
         envFrom:
         - configMapRef:
-            name: survive4-config
+            name: survive5-config
         resources:
           requests:
             memory: "2Gi"
@@ -78,12 +80,12 @@ spec:
           periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: vol-vsan-survive4
+            name: vol-vsan-survive5
 # ---
 # apiVersion: v1
 # kind: Service
 # metadata:
-#   name: survive4-lb
+#   name: survive5-lb
 # spec:
 #   type: LoadBalancer
 #   ports:
@@ -96,4 +98,4 @@ spec:
 #     protocol: TCP
 #     targetPort: 25565
 #   selector:
-#     run: survive4
+#     run: survive5

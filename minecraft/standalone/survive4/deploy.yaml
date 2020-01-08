@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -12,25 +13,35 @@ spec:
   strategy: {}
   template:
     metadata:
+      annotations:
+        backup.velero.io/backup-volumes: vol-vsan-survive4
       labels:
         run: survive4
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
       volumes:
-      - name: vol-nfs-survive4
+      - name: vol-vsan-survive4
         persistentVolumeClaim:
-          claimName: vol-nfs-survive4-claim
-      # - name: vol-backup-survive4
-      #   persistentVolumeClaim:
-      #     claimName: vol-backup-survive4-claim
+          claimName: vol-vsan-survive4-claim
+      - name: plugins
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/bukkit-plugins/1.15.1
+      # - name: source
+      #   nfs:
+      #     server: 192.168.96.20
+      #     path: /nfs/kubevols/survive4
+      # initContainers:
+      # - image: itzg/mc-backup
+      #   name: syncdata
+      #   command: ['sh', '-c', 'cp -Rv /backups/* /data/']
+      #   volumeMounts:
+      #     - mountPath: "/data"
+      #       name: vol-vsan-survive4
+      #     - mountPath: "/backups"
+      #       name: source
       containers:
       - image: itzg/minecraft-server
         name: survive4
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
         envFrom:
         - configMapRef:
             name: survive4-config
@@ -58,12 +69,15 @@ spec:
           periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: vol-nfs-survive4
+            name: vol-vsan-survive4
+          - mountPath: "/plugins"
+            name: plugins
+            readOnly: true
       - name: cloudcmd
         image: coderaiser/cloudcmd
         volumeMounts:
           - mountPath: "/data"
-            name: vol-nfs-survive4
+            name: vol-vsan-survive4
         ports:
         - containerPort: 8000
           name: cloudcmd
@@ -73,19 +87,3 @@ spec:
           - --name
           - survive
           - --one-file-panel
-        securityContext:
-          runAsUser: 1000
-      # - image: itzg/mc-backup:latest
-      #   name: backup
-      #   securityContext:
-      #     runAsUser: 1000
-      #     runAsGroup: 1000
-      #   envFrom:
-      #   - configMapRef:
-      #       name: survive4-config
-      #   volumeMounts:
-      #     - mountPath: "/data"
-      #       name: vol-nfs-survive4
-      #       readOnly: true
-      #     - mountPath: "/backups"
-      #       name: vol-backup-survive4

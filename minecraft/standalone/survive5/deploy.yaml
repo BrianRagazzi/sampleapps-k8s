@@ -3,33 +3,35 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: pixelmon
-  name: pixelmon
+    run: survive5
+  name: survive5
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: pixelmon
+      run: survive5
   strategy: {}
   template:
     metadata:
+      annotations:
+        backup.velero.io/backup-volumes: vol-vsan-survive5
       labels:
-        run: pixelmon
+        run: survive5
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
       volumes:
-      - name: vol-nfs-pixelmon
+      - name: vol-vsan-survive5
+        persistentVolumeClaim:
+          claimName: vol-vsan-survive5-claim
+      - name: plugins
         nfs:
           server: 192.168.96.20
-          path: /nfs/kubevols/pixelmon
+          path: /nfs/kubevols/bukkit-plugins/1.14.4
       containers:
       - image: itzg/minecraft-server
-        name: pixelmon
+        name: survive5
         envFrom:
         - configMapRef:
-            name: pixelmon-config
+            name: survive5-config
         resources:
           requests:
             memory: "2Gi"
@@ -54,12 +56,15 @@ spec:
           periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: vol-nfs-pixelmon
+            name: vol-vsan-survive5
+          - mountPath: "/plugins"
+            name: plugins
+            readOnly: true
       - name: cloudcmd
         image: coderaiser/cloudcmd
         volumeMounts:
           - mountPath: "/data"
-            name: vol-nfs-pixelmon
+            name: vol-vsan-survive5
         ports:
         - containerPort: 8000
           name: cloudcmd
@@ -69,3 +74,5 @@ spec:
           - --name
           - survive
           - --one-file-panel
+        securityContext:
+          runAsUser: 1000

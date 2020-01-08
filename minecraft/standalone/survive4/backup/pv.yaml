@@ -2,28 +2,28 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: vol-nfs-survive3
+  name: vol-nfs-survive4
   labels:
     type: nfs
-    mcserver: survive3
+    mcserver: survive4
 spec:
-  storageClassName: nfs-survive3
+  storageClassName: nfs-survive4
   capacity:
     storage: 5Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: storage.ragazzilab.com
-    path: /exports/kubevols/survive3
+    server: 192.168.96.20
+    path: /nfs/kubevols/survive4
 # ---
 # apiVersion: v1
 # kind: PersistentVolume
 # metadata:
-#   name: vol-backup-survive3
+#   name: vol-backup-survive4
 #   labels:
 #     type: backup
-#     mcserver: survive3
+#     mcserver: survive4
 # spec:
 #   capacity:
 #     storage: 5Gi
@@ -32,4 +32,4 @@ spec:
 #   persistentVolumeReclaimPolicy: Retain
 #   nfs:
 #     server: 192.168.96.21
-#     path: /exports/kubevols/backups/mcservers/survive3
+#     path: /exports/kubevols/backups/mcservers/survive4

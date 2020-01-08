@@ -3,33 +3,48 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: pixelmon
-  name: pixelmon
+    run: survive1
+  name: survive1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: pixelmon
+      run: survive1
   strategy: {}
   template:
     metadata:
+      annotations:
+        backup.velero.io/backup-volumes: vol-vsan-survive1
       labels:
-        run: pixelmon
+        run: survive1
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
       volumes:
-      - name: vol-nfs-pixelmon
+      - name: vol-vsan-survive1
+        persistentVolumeClaim:
+          claimName: vol-vsan-survive1-claim
+      - name: plugins
         nfs:
           server: 192.168.96.20
-          path: /nfs/kubevols/pixelmon
+          path: /nfs/kubevols/bukkit-plugins/1.14.4
+      - name: source
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/survive
+      initContainers:
+      - image: itzg/mc-backup
+        name: syncdata
+        command: ['sh', '-c', 'cp -Rv /backups/* /data/']
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-vsan-survive1
+          - mountPath: "/backups"
+            name: source
       containers:
       - image: itzg/minecraft-server
-        name: pixelmon
+        name: survive1
         envFrom:
         - configMapRef:
-            name: pixelmon-config
+            name: survive1-config
         resources:
           requests:
             memory: "2Gi"
@@ -42,7 +57,7 @@ spec:
             - mcstatus
             - localhost
             - ping
-          initialDelaySeconds: 240
+          initialDelaySeconds: 300
           periodSeconds: 5
         livenessProbe:
           exec:
@@ -50,16 +65,19 @@ spec:
             - mcstatus
             - localhost
             - ping
-          initialDelaySeconds: 240
+          initialDelaySeconds: 300
           periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: vol-nfs-pixelmon
+            name: vol-vsan-survive1
+          - mountPath: "/plugins"
+            name: plugins
+            readOnly: true
       - name: cloudcmd
         image: coderaiser/cloudcmd
         volumeMounts:
           - mountPath: "/data"
-            name: vol-nfs-pixelmon
+            name: vol-vsan-survive1
         ports:
         - containerPort: 8000
           name: cloudcmd

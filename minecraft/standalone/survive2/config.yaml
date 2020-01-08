@@ -22,3 +22,5 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: survive2-config
+  labels:
+    run: survive2

@@ -1,13 +1,13 @@
 apiVersion: v1
 data:
   EULA: "true"
-  VERSION: LATEST #1.14.4 # 1.12.2
+  VERSION: 1.14.4 # 1.12.2
   FORGEVERSION: RECOMMENDED
   TYPE: PAPER # VANILLA, FORGE, SPIGOT, PAPER
-  SERVER_NAME: "survive4"
+  SERVER_NAME: "survive2"
   MEMORY: "2G"
   BUILD_FROM_SOURCE: "true" #Spigot
-  MOTD: "survive4 - PaperMC on K8s"
+  MOTD: "survive2 - PaperMC on K8s"
   ONLINE_MODE: "false" # false for bungeecord
   SRC_DIR: /data #Backup Source Folder
   BACKUP_INTERVAL: "60"
@@ -21,6 +21,4 @@ data:
 kind: ConfigMap
 metadata:
   creationTimestamp: null
-  name: survive4-config
-  labels:
-    run: survive4
+  name: survive2-config

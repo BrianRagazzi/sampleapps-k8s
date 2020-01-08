@@ -68,10 +68,10 @@ spec:
       - name: vol-vsan-survive3
         persistentVolumeClaim:
           claimName: vol-vsan-survive3-claim
-      - name: vol-backup-survive3
-        nfs:
-          server: 192.168.96.21
-          path: /nfs/kubevols/backups/mcservers/survive3
+      # - name: vol-backup-survive3
+      #   nfs:
+      #     server: 192.168.96.21
+      #     path: /nfs/kubevols/backups/mcservers/survive3
       containers:
       - name: cloudcmd
         image: coderaiser/cloudcmd

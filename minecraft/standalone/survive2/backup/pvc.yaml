@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: vol-nfs-survive3-claim
+  name: vol-nfs-survive2-claim
 spec:
-  storageClassName: nfs-survive3
+  storageClassName: nfs-survive2
   selector:
     matchLabels:
-      mcserver: survive3
+      mcserver: survive2
       type: nfs
   accessModes:
   - ReadWriteOnce
@@ -18,11 +18,11 @@ spec:
 # apiVersion: v1
 # kind: PersistentVolumeClaim
 # metadata:
-#   name: vol-backup-survive3-claim
+#   name: vol-backup-survive2-claim
 # spec:
 #   selector:
 #     matchLabels:
-#       mcserver: survive3
+#       mcserver: survive2
 #       type: backup
 #   accessModes:
 #   - ReadWriteOnce
