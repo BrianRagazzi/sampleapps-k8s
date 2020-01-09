@@ -15,6 +15,10 @@ spec:
     metadata:
       annotations:
         backup.velero.io/backup-volumes: vol-vsan-survive2
+        pre.hook.backup.velero.io/command: '["rcon-cli", "save-off"]'
+        pre.hook.backup.velero.io/container: survive2
+        post.hook.backup.velero.io/command: '["rcon-cli", "save-on"]'
+        post.hook.backup.velero.io/container: survive2
       labels:
         run: survive2
     spec:
