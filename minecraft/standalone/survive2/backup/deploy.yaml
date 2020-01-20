@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,6 +23,10 @@ spec:
       - name: vol-nfs-survive2
         persistentVolumeClaim:
           claimName: vol-nfs-survive2-claim
+      - name: plugins
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/bukkit-plugins/1.15.1
       # - name: vol-backup-survive2
       #   persistentVolumeClaim:
       #     claimName: vol-backup-survive2-claim
@@ -59,6 +64,9 @@ spec:
         volumeMounts:
           - mountPath: "/data"
             name: vol-nfs-survive2
+          - mountPath: "/plugins"
+            name: plugins
+            readOnly: true
       - name: cloudcmd
         image: coderaiser/cloudcmd
         volumeMounts:
@@ -75,16 +83,3 @@ spec:
           - --one-file-panel
         securityContext:
           runAsUser: 1000
-      # - image: itzg/mc-backup:latest
-      #   name: backup
-      #   securityContext:
-      #     runAsUser: 1000
-      #   envFrom:
-      #   - configMapRef:
-      #       name: survive2-config
-      #   volumeMounts:
-      #     - mountPath: "/data"
-      #       name: vol-nfs-survive2
-      #       readOnly: true
-      #     - mountPath: "/backups"
-      #       name: vol-backup-survive2

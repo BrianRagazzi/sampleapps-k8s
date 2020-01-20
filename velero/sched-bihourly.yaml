@@ -1,0 +1,45 @@
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: surv1-bihourly
+spec:
+  schedule: '@every 2h'
+  template:
+    hooks: {}
+    includedNamespaces:
+    - mc
+    labelSelector:
+      matchLabels:
+        run: survive1
+    ttl: 24h0m0s
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: surv2-bihourly
+spec:
+  schedule: '@every 2h'
+  template:
+    hooks: {}
+    includedNamespaces:
+    - mc
+    labelSelector:
+      matchLabels:
+        run: survive2
+    ttl: 24h0m0s
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: surv4-bihourly
+spec:
+  schedule: '@every 2h'
+  template:
+    hooks: {}
+    includedNamespaces:
+    - mc
+    labelSelector:
+      matchLabels:
+        run: survive4
+    ttl: 24h0m0s
