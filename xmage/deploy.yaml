@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: xmage
+  name: xmage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: xmage
+  template:
+    metadata:
+      labels:
+        run: xmage
+    spec:
+      volumes:
+      - name: xmage-db
+        persistentVolumeClaim:
+          claimName: vol-vsan-xmage-db
+      - name: xmage-saved
+        persistentVolumeClaim:
+          claimName: vol-vsan-xmage-saved
+      containers:
+      - image: flippyboy/xmage-alpine
+        name: xmage
+        ports:
+        - containerPort: 17171
+          name: 17171
+        - containerPort: 17179
+          name: 17179
+       envFrom:
+      - configMapRef:
+          name: xmage-config
+       resources:
+         requests:
+           memory: "2Gi"
