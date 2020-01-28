@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: dotnet35
+  name: dotnet35
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dotnet35
+      name: dotnet35
+    spec:
+      containers:
+      - name: windowswebserver
+        imagePullPolicy: Always
+        image: ragazzilab/dotnet-helloworld:3.5
+      imagePullSecrets:
+      - name: harbor
+      tolerations:
+      - key: "windows"
+        operator: "Exists"
+        effect: "NoSchedule"
+      nodeSelector:
+        beta.kubernetes.io/os: windows
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dotnet35
+  labels:
+    app: dotnet35
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: dotnet35
+  type: NodePort
