@@ -3,19 +3,19 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: dotnet35
-  name: dotnet35
+    app: helloworld35
+  name: helloworld35
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: dotnet35
-      name: dotnet35
+        app: helloworld35
+      name: helloworld35
     spec:
       containers:
       - name: windowswebserver
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         image: ragazzilab/dotnet-helloworld:3.5
       imagePullSecrets:
       - name: harbor
@@ -29,13 +29,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dotnet35
+  name: helloworld35
   labels:
-    app: dotnet35
+    app: helloworld35
 spec:
   ports:
   - port: 80
-    targetPort: 80
   selector:
-    app: dotnet35
+    app: helloworld35
   type: NodePort
