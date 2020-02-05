@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: aspsqloledb
+  name: aspsqloledb
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: aspsqloledb
+      name: aspsqloledb
+    spec:
+      containers:
+      - name: windowswebserver
+        imagePullPolicy: IfNotPresent
+        image: ragazzilab/aspsqloledb:1.0
+        env:
+        - name: SQLDATASOURCE
+          value: "10.200.21.16;UID=SA;PWD=VMware1!;DATABASE=master" # "hostname-or-ip;UID=user-id;PWD=password;DATABASE=database-name"
+      imagePullSecrets:
+      - name: harbor
+      tolerations:
+      - key: "windows"
+        operator: "Exists"
+        effect: "NoSchedule"
+      nodeSelector:
+        beta.kubernetes.io/os: windows
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aspsqloledb
+  labels:
+    app: aspsqloledb
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: aspsqloledb
+  type: NodePort
