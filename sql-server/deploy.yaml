@@ -29,6 +29,8 @@ spec:
           value: "Developer" # "Enterprise, Standard, Express, Developer"
         - name: ACCEPT_EULA
           value: "Y"
+        - name: MSSQL_IP_ADDRESS
+          value: 0.0.0.0
         - name: MSSQL_SA_PASSWORD
           valueFrom:
             secretKeyRef:
