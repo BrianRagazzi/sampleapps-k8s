@@ -1,0 +1,3 @@
+helm install stable/prometheus-operator --name prometheus-operator --namespace monitoring
+
+kubectl expose deploy prometheus-operator-grafana --name=prometheus-operator-grafana-lb --port=80 --target-port=3000 -n monitoring --selector=app=grafana --type=LoadBalancer

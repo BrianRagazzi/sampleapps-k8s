@@ -6,7 +6,7 @@ metadata:
     run: survive4
 spec:
   type: LoadBalancer
-  loadBalancerIP: 192.168.105.76
+  #loadBalancerIP: 192.168.105.79
   ports:
   - port: 80
     name: dynmap

@@ -1,7 +1,0 @@
----
-apiVersion: v1
-data:
-  MOTD: "TShock"
-kind: ConfigMap
-metadata:
-  name: tshock-config

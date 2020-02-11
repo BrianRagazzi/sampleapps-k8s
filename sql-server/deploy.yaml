@@ -23,7 +23,7 @@ spec:
         - containerPort: 1433
         resources:
           requests:
-            memory: "4Gi"
+            memory: "2Gi"
         env:
         - name: MSSQL_PID
           value: "Developer" # "Enterprise, Standard, Express, Developer"

@@ -1,0 +1,2 @@
+helm repo add halkeye https://halkeye.github.io/helm-charts/
+helm install -f terrariavalues.yaml halkeye/terraria --version 0.2.1 --namespace terraria --name terraria
