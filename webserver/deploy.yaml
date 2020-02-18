@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: webserver
+  name: webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: webserver
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+      labels:
+        run: webserver
+    spec:
+      volumes:
+      - name: workdir
+        emptyDir: {}
+      initContainers:
+      - image: busybox
+        name: copypage
+        volumeMounts:
+        - name: workdir
+          mountPath: /workdir
+        command:
+        - wget
+        - "-O"
+        - "/workdir/index.html"
+        - "https://raw.githubusercontent.com/BrianRagazzi/PlatAuto-FoundationConfig/homelab/wikihome.html"
+      containers:
+      - image: nginx
+        name: webserver
+        volumeMounts:
+        - name: workdir
+          mountPath: /usr/share/nginx/html
+        ports:
+        - containerPort: 80
+          name: main
