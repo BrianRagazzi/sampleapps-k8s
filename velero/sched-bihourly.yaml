@@ -4,7 +4,7 @@ kind: Schedule
 metadata:
   name: surv1-bihourly
 spec:
-  schedule: '@every 2h'
+  schedule: '10 0/2 * * *' #'@every 2h'
   template:
     hooks: {}
     includedNamespaces:
@@ -17,16 +17,16 @@ spec:
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: surv2-bihourly
+  name: surv5-bihourly
 spec:
-  schedule: '@every 2h'
+  schedule: '20 0/2 * * *' #'@every 2h'
   template:
     hooks: {}
     includedNamespaces:
     - mc
     labelSelector:
       matchLabels:
-        run: survive2
+        run: survive5
     ttl: 24h0m0s
 ---
 apiVersion: velero.io/v1
@@ -34,7 +34,7 @@ kind: Schedule
 metadata:
   name: surv4-bihourly
 spec:
-  schedule: '@every 2h'
+  schedule: '30 0/2 * * *' #'@every 2h'
   template:
     hooks: {}
     includedNamespaces:

@@ -4,7 +4,7 @@ kind: Schedule
 metadata:
   name: surv1-daily
 spec:
-  schedule: '0 0 * * *'
+  schedule: '40 0 * * *'
   template:
     hooks: {}
     includedNamespaces:
@@ -17,16 +17,16 @@ spec:
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: surv2-daily
+  name: surv5-daily
 spec:
-  schedule: '0 0 * * *'
+  schedule: '50 0 * * *'
   template:
     hooks: {}
     includedNamespaces:
     - mc
     labelSelector:
       matchLabels:
-        run: survive2
+        run: survive5
     ttl: 168h0m0s
 ---
 apiVersion: velero.io/v1
@@ -34,7 +34,7 @@ kind: Schedule
 metadata:
   name: surv4-daily
 spec:
-  schedule: '0 0 * * *'
+  schedule: '45 0 * * *'
   template:
     hooks: {}
     includedNamespaces:
