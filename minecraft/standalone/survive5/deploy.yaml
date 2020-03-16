@@ -15,6 +15,10 @@ spec:
     metadata:
       annotations:
         backup.velero.io/backup-volumes: vol-vsan-survive5
+        pre.hook.backup.velero.io/command: '["rcon-cli", "save-off"]'
+        pre.hook.backup.velero.io/container: survive5
+        post.hook.backup.velero.io/command: '["rcon-cli", "save-on"]'
+        post.hook.backup.velero.io/container: survive5
       labels:
         run: survive5
     spec:
@@ -25,7 +29,20 @@ spec:
       - name: plugins
         nfs:
           server: 192.168.96.20
-          path: /nfs/kubevols/bukkit-plugins/1.14.4
+          path: /nfs/kubevols/bukkit-plugins/1.15.2.pre
+      # - name: source
+      #   nfs:
+      #     server: 192.168.96.20
+      #     path: /nfs/kubevols/survive5
+      # initContainers:
+      # - image: itzg/mc-backup
+      #   name: syncdata
+      #   command: ['sh', '-c', 'cp -Rv /backups/* /data/']
+      #   volumeMounts:
+      #     - mountPath: "/data"
+      #       name: vol-vsan-survive5
+      #     - mountPath: "/backups"
+      #       name: source
       containers:
       - image: itzg/minecraft-server
         name: survive5
@@ -44,7 +61,7 @@ spec:
             - mcstatus
             - localhost
             - ping
-          initialDelaySeconds: 240
+          initialDelaySeconds: 300
           periodSeconds: 5
         livenessProbe:
           exec:
@@ -52,7 +69,7 @@ spec:
             - mcstatus
             - localhost
             - ping
-          initialDelaySeconds: 240
+          initialDelaySeconds: 300
           periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
@@ -74,5 +91,3 @@ spec:
           - --name
           - survive
           - --one-file-panel
-        securityContext:
-          runAsUser: 1000

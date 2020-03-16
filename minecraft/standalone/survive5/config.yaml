@@ -1,17 +1,25 @@
----
 apiVersion: v1
 data:
   EULA: "true"
-  VERSION: LATEST #1.14.4 # 1.12.2
+  VERSION: latest #1.15.2 #1.14.4 # 1.12.2
   FORGEVERSION: RECOMMENDED
   TYPE: PAPER # VANILLA, FORGE, SPIGOT, PAPER
   SERVER_NAME: "survive5"
   MEMORY: "2G"
-  BUILD_FROM_SOURCE: "false" #Spigot
+  BUILD_FROM_SOURCE: "true" #Spigot
   MOTD: "survive5 - PaperMC on K8s"
   ONLINE_MODE: "false" # false for bungeecord
+  SRC_DIR: /data #Backup Source Folder
+  RCON_PORT: "25575"
+  EXCLUDES: cache,logs,tiles
+  SEED: "-2760607246984874026"
+  MODE: "survival"
+  VIEW_DISTANCE: "16"
+  SPAWN_ANIMALS: "true"
+  GENERATE_STRUCTURES: "true"
 kind: ConfigMap
 metadata:
+  creationTimestamp: null
   name: survive5-config
   labels:
     run: survive5
