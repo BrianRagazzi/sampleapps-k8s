@@ -1,0 +1,27 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: credhub-test
+  name: credhub-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: credhub-test
+  template:
+    metadata:
+      labels:
+        run: credhub-test
+    spec:
+      containers:
+      - image: ragazzilab/credhub-cli:2.7.0
+        imagePullPolicy: Always
+        name: credhub-test
+        envFrom:
+        - configMapRef:
+            name: credhub-env
+        command: ['/bin/sh', '-c'] #, '-c', 'credhub login --skip-tls-validation']
+      # - image: nginx
+      #   name: nginx
