@@ -1,0 +1,85 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: crazycraft
+  name: crazycraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: crazycraft
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        backup.velero.io/backup-volumes: vol-vsan-crazycraft
+      labels:
+        run: crazycraft
+    spec:
+      volumes:
+      - name: vol-vsan-crazycraft
+        persistentVolumeClaim:
+          claimName: vol-vsan-crazycraft-claim
+      - name: mods
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/bukkit-plugins/1.7.10/crazycraft/mods
+      - name: config
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/bukkit-plugins/1.7.10/crazycraft/config
+      containers:
+      - image: itzg/minecraft-server
+        name: crazycraft
+        envFrom:
+        - configMapRef:
+            name: crazycraft-config
+        resources:
+          requests:
+            memory: "2Gi"
+        ports:
+        - containerPort: 25565
+          name: main
+        readinessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 240
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 240
+          periodSeconds: 5
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-vsan-crazycraft
+          - mountPath: "/mods"
+            name: mods
+            readOnly: true
+          - mountPath: "/config"
+            name: config
+            readOnly: true
+      - name: cloudcmd
+        image: coderaiser/cloudcmd
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-vsan-crazycraft
+        ports:
+        - containerPort: 8000
+          name: cloudcmd
+        args:
+          - --root
+          - /data
+          - --name
+          - survive
+          - --one-file-panel
+        securityContext:
+          runAsUser: 1000
