@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+data:
+  EULA: "true"
+  VERSION: 1.7.10 #1.14.4 # 1.12.2
+  FORGEVERSION: RECOMMENDED
+  TYPE: FORGE # VANILLA, FORGE, SPIGOT, PAPER
+  SERVER_NAME: "crazy"
+  MEMORY: "2G"
+  BUILD_FROM_SOURCE: "false" #Spigot
+  MOTD: "Crazy Craft Server"
+  ONLINE_MODE: "false" # false for bungeecord
+kind: ConfigMap
+metadata:
+  name: crazycraft-config
+  labels:
+    run: crazycraft
