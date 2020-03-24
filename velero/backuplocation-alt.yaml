@@ -1,0 +1,15 @@
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  labels:
+    component: velero
+  name: alt
+  namespace: velero
+spec:
+  config:
+    region: minio
+    s3ForcePathStyle: "true"
+    s3Url: http://192.168.100.187
+  objectStorage:
+    bucket: backup
+  provider: aws

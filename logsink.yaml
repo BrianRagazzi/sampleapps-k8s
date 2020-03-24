@@ -1,9 +1,0 @@
-apiVersion: pksapi.io/v1beta1
-kind: ClusterLogSink
-metadata:
-   name: syslog
-spec:
-   type: syslog
-   host: syslog.ragazzilab.com
-   port: 514
-   enable_tls: true

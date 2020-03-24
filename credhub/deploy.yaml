@@ -22,6 +22,6 @@ spec:
         envFrom:
         - configMapRef:
             name: credhub-env
-        command: ['/bin/sh', '-c'] #, '-c', 'credhub login --skip-tls-validation']
+        #command: ['/bin/sh', '-c'] #, '-c', 'credhub login --skip-tls-validation']
       # - image: nginx
       #   name: nginx

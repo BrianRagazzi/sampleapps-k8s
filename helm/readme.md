@@ -1,5 +1,11 @@
 ## Steps ##
 
+* brew install helm
+* brew --version (check for 3.1+)
+*
+
+
+
 * Edit storageclass.yml with correct datastore name
 * Apply storageClass.yml to cluster
 * Edit pvc-sample.yml with correct storageclassname

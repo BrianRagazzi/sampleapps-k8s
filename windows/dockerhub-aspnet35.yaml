@@ -17,8 +17,6 @@ spec:
       - name: windowswebserver
         imagePullPolicy: IfNotPresent
         image: ragazzilab/dotnet-helloworld:3.5
-      imagePullSecrets:
-      - name: harbor
       tolerations:
       - key: "windows"
         operator: "Exists"

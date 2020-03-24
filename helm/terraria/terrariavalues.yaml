@@ -1,0 +1,26 @@
+# Default values for terraria.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+service:
+  type: LoadBalancer
+  port: 7777
+  annotations: {}
+
+terraria:
+  maxPlayers: 8
+
+
+persistence:
+  enabled: false
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClassName: "vsan"
+  accessModes:
+    - ReadWriteOnce
+  size: 1Gi
