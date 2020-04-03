@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: bungeecord
+  name: bungeecord
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: bungeecord
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: bungeecord
+      annotations:
+        backup.velero.io/backup-volumes: vol-vsan-bungeecord
+    spec:
+      volumes:
+      - name: vol-nfs-bungeecord
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/bungeecord
+      containers:
+      - image: itzg/bungeecord
+        name: bungeecord
+        ports:
+        - containerPort: 25565
+          name: bungee
+        envFrom:
+        - configMapRef:
+            name: bungeecord-config
+        resources:
+          requests:
+            memory: "512Mi"
+        volumeMounts:
+          - mountPath: "/config"
+            name: vol-nfs-bungeecord

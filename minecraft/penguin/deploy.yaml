@@ -1,0 +1,93 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: penguin
+  name: penguin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: penguin
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        backup.velero.io/backup-volumes: vol-vsan-penguin
+        pre.hook.backup.velero.io/command: '["rcon-cli", "save-off"]'
+        pre.hook.backup.velero.io/container: penguin
+        post.hook.backup.velero.io/command: '["rcon-cli", "save-on"]'
+        post.hook.backup.velero.io/container: penguin
+      labels:
+        run: penguin
+    spec:
+      volumes:
+      - name: vol-vsan-penguin
+        persistentVolumeClaim:
+          claimName: vol-vsan-penguin-claim
+      - name: plugins
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/bukkit-plugins/1.15.2
+      # - name: source
+      #   nfs:
+      #     server: 192.168.96.20
+      #     path: /nfs/kubevols/penguin
+      # initContainers:
+      # - image: itzg/mc-backup
+      #   name: syncdata
+      #   command: ['sh', '-c', 'cp -Rv /backups/* /data/']
+      #   volumeMounts:
+      #     - mountPath: "/data"
+      #       name: vol-vsan-penguin
+      #     - mountPath: "/backups"
+      #       name: source
+      containers:
+      - image: itzg/minecraft-server
+        name: penguin
+        envFrom:
+        - configMapRef:
+            name: penguin-config
+        resources:
+          requests:
+            memory: "2Gi"
+        ports:
+        - containerPort: 25565
+          name: main
+        readinessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 300
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 300
+          periodSeconds: 5
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-vsan-penguin
+          - mountPath: "/plugins"
+            name: plugins
+            readOnly: true
+      - name: cloudcmd
+        image: coderaiser/cloudcmd
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-vsan-penguin
+        ports:
+        - containerPort: 8000
+          name: cloudcmd
+        args:
+          - --root
+          - /data
+          - --name
+          - survive
+          - --one-file-panel
