@@ -1,5 +1,6 @@
 # Install chart
 
+k create ns monitoring
 helm install prometheus-operator stable/prometheus-operator  --namespace monitoring --set grafana.adminPassword="admin"
 
 #Expose Service (LoadBalancer)
