@@ -22,16 +22,16 @@ spec:
         persistentVolumeClaim:
           claimName: vol-vsan-xmage-saved
       containers:
-      - image: flippyboy/xmage-alpine
+      - image: ragazzilab/docker-xmage-alpine
         name: xmage
         ports:
         - containerPort: 17171
-          name: 17171
+          name: primary
         - containerPort: 17179
-          name: 17179
-       envFrom:
-      - configMapRef:
-          name: xmage-config
-       resources:
-         requests:
-           memory: "2Gi"
+          name: secondary
+        envFrom:
+        - configMapRef:
+            name: xmage-config
+        resources:
+          requests:
+            memory: "2Gi"
