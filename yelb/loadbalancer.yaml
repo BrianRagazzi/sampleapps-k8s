@@ -1,0 +1,8 @@
+---
+apiVersion: vmware.com/v1alpha1
+kind: LoadBalancer
+metadata:
+  name: ingress-1
+spec:
+  httpConfig: {}
+  size: SMALL
