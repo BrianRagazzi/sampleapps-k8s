@@ -51,43 +51,43 @@ spec:
             name: survive2-config
         resources:
           requests:
-            memory: "2Gi"
+            memory: "1Gi"
         ports:
         - containerPort: 25565
           name: main
-        # readinessProbe:
-        #   exec:
-        #     command:
-        #     - mcstatus
-        #     - localhost
-        #     - ping
-        #   initialDelaySeconds: 300
-        #   periodSeconds: 5
-        # livenessProbe:
-        #   exec:
-        #     command:
-        #     - mcstatus
-        #     - localhost
-        #     - ping
-        #   initialDelaySeconds: 300
-        #   periodSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 300
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 300
+          periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
             name: vol-vsan-survive2
           # - mountPath: "/plugins"
           #   name: plugins
           #   readOnly: true
-      # - name: cloudcmd
-      #   image: coderaiser/cloudcmd
-      #   volumeMounts:
-      #     - mountPath: "/data"
-      #       name: vol-vsan-survive2
-      #   ports:
-      #   - containerPort: 8000
-      #     name: cloudcmd
-      #   args:
-      #     - --root
-      #     - /data
-      #     - --name
-      #     - survive
-      #     - --one-file-panel
+      - name: cloudcmd
+        image: coderaiser/cloudcmd
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-vsan-survive2
+        ports:
+        - containerPort: 8000
+          name: cloudcmd
+        args:
+          - --root
+          - /data
+          - --name
+          - survive
+          - --one-file-panel
