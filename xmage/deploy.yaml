@@ -26,12 +26,12 @@ spec:
         name: xmage
         ports:
         - containerPort: 17171
-          name: 17171
+          name: primary
         - containerPort: 17179
-          name: 17179
-       envFrom:
-      - configMapRef:
-          name: xmage-config
-       resources:
-         requests:
-           memory: "2Gi"
+          name: secondary
+        envFrom:
+        - configMapRef:
+            name: xmage-config
+        resources:
+          requests:
+            memory: "2Gi"
