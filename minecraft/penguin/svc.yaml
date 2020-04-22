@@ -2,9 +2,9 @@
 # apiVersion: v1
 # kind: Service
 # metadata:
-#   name: survive5-lb
+#   name: penguin-lb
 #   labels:
-#     run: survive5
+#     run: penguin
 # spec:
 #   type: LoadBalancer
 #   #loadBalancerIP: 192.168.105.79
@@ -22,13 +22,13 @@
 #     protocol: TCP
 #     targetPort: 8000
 #   selector:
-#     run: survive5
+#     run: penguin
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: survive5-svc
+  name: penguin-svc
 spec:
   type: ClusterIP
   ports:
@@ -45,4 +45,4 @@ spec:
     protocol: TCP
     targetPort: 8000
   selector:
-    run: survive5
+    run: penguin

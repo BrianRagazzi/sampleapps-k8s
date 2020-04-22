@@ -8,11 +8,12 @@ spec:
   type: LoadBalancer
   ports:
   - port: 17171
-    name: 17171
+    name: primary
     protocol: TCP
     targetPort: 17171
   - port: 17179
-    name: 17179
+    name: secondary
     protocol: TCP
     targetPort: 17179
+  selector:
     run: xmage

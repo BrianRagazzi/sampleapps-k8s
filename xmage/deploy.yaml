@@ -22,7 +22,8 @@ spec:
         persistentVolumeClaim:
           claimName: vol-vsan-xmage-saved
       containers:
-      - image: flippyboy/xmage-alpine
+      - image: ragazzilab/docker-xmage-alpine
+        imagePullPolicy: Always
         name: xmage
         ports:
         - containerPort: 17171

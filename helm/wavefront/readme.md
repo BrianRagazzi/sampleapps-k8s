@@ -1,3 +1,6 @@
+
+## Wavefront
+
 helm repo add wavefront https://wavefronthq.github.io/helm/
 helm repo update
 helm install wavefront/wavefront --name wavefront \

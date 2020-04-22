@@ -3,55 +3,55 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: survive2
-  name: survive2
+    run: penguin
+  name: penguin
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: survive2
+      run: penguin
   strategy: {}
   template:
     metadata:
       annotations:
-        backup.velero.io/backup-volumes: vol-vsan-survive2
+        backup.velero.io/backup-volumes: vol-vsan-penguin
         pre.hook.backup.velero.io/command: '["rcon-cli", "save-off"]'
-        pre.hook.backup.velero.io/container: survive2
+        pre.hook.backup.velero.io/container: penguin
         post.hook.backup.velero.io/command: '["rcon-cli", "save-on"]'
-        post.hook.backup.velero.io/container: survive2
+        post.hook.backup.velero.io/container: penguin
       labels:
-        run: survive2
+        run: penguin
     spec:
       volumes:
-      - name: vol-vsan-survive2
+      - name: vol-vsan-penguin
         persistentVolumeClaim:
-          claimName: vol-vsan-survive2-claim
-      # - name: plugins
-      #   nfs:
-      #     server: 192.168.96.20
-      #     path: /nfs/kubevols/bukkit-plugins/1.15.1
+          claimName: vol-vsan-penguin-claim
+      - name: plugins
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/bukkit-plugins/1.15.2
       # - name: source
       #   nfs:
       #     server: 192.168.96.20
-      #     path: /nfs/kubevols/survive2
+      #     path: /nfs/kubevols/penguin
       # initContainers:
       # - image: itzg/mc-backup
       #   name: syncdata
       #   command: ['sh', '-c', 'cp -Rv /backups/* /data/']
       #   volumeMounts:
       #     - mountPath: "/data"
-      #       name: vol-vsan-survive2
+      #       name: vol-vsan-penguin
       #     - mountPath: "/backups"
       #       name: source
       containers:
       - image: itzg/minecraft-server
-        name: survive2
+        name: penguin
         envFrom:
         - configMapRef:
-            name: survive2-config
+            name: penguin-config
         resources:
           requests:
-            memory: "1Gi"
+            memory: "2Gi"
         ports:
         - containerPort: 25565
           name: main
@@ -73,15 +73,15 @@ spec:
           periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: vol-vsan-survive2
-          # - mountPath: "/plugins"
-          #   name: plugins
-          #   readOnly: true
+            name: vol-vsan-penguin
+          - mountPath: "/plugins"
+            name: plugins
+            readOnly: true
       - name: cloudcmd
         image: coderaiser/cloudcmd
         volumeMounts:
           - mountPath: "/data"
-            name: vol-vsan-survive2
+            name: vol-vsan-penguin
         ports:
         - containerPort: 8000
           name: cloudcmd

@@ -35,7 +35,8 @@ kubectl set image daemonset/restic \
 ### Create a Schedule
 `velero schedule create surv5-hourly --ttl 72h0m0s --schedule='@every 1h' --include-namespaces mc --selector run=survive5  --include-resources '*'`
 
-
+### Restore
+`velero restore create --from-schedule surv4-bihourly --selector run=survive4`
 
 ### Uninstall
 `kubectl delete namespace/velero clusterrolebinding/velero
