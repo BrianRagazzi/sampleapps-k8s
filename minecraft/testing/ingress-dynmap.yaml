@@ -1,0 +1,33 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: mc-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /surv1
+        backend:
+          serviceName: survive1-svc
+          servicePort: 8123
+      - path: /surv1/cmd
+        backend:
+          serviceName: survive1-svc
+          servicePort: 8000
+      - path: /surv2
+        backend:
+          serviceName: survive2-svc
+          servicePort: 80
+      - path: /surv5
+        backend:
+          serviceName: survive5-svc
+          servicePort: 80
+      - path: /surv5/cmd
+        backend:
+          serviceName: survive5-svc
+          servicePort: 8000
+      # - path: /surv2/cmd
+      #   backend:
+      #     serviceName: survive2-cip
+      #     servicePort: 8000
