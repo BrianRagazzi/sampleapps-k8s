@@ -1,0 +1,143 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: grafana
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: grafana
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: grafana
+    spec:
+      containers:
+      - image: ragazzilab/grafana-vsan:6.1.6 #grafana/grafana:6.1.6
+        name: grafana
+        ports:
+        - containerPort: 3000
+        # env:  Moved to image
+        # - name: GF_SECURITY_ADMIN_USER
+        #   value: "admin"
+        # - name: GF_SECURITY_ADMIN_PASSWORD
+        #   value: "admin"
+        # - name: GF_AUTH_ANONYMOUS_ENABLED
+        #   value: "true"
+        # - name: GF_AUTH_ANONYMOUS_ORG_NAME
+        #   value: "Main Org."
+        # - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+        #   value: "Editor"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vol-vsan-influxdb-storage-claim
+spec:
+  storageClassName: vsan
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       storage: 2Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: influxdb
+  name: influxdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: influxdb
+  template:
+    metadata:
+      labels:
+        run: influxdb
+    spec:
+      volumes:
+      - name: vol-vsan-influxdb-storage
+        persistentVolumeClaim:
+          claimName: vol-vsan-influxdb-storage-claim
+      containers:
+      - image: influxdb:1.7
+        name: influxdb
+        ports:
+        - containerPort: 8086
+        volumeMounts:
+          - mountPath: /var/lib/influxdb
+            name: vol-vsan-influxdb-storage
+        env:
+        - name: INFLUXDB_DB
+          value: "db0"
+        - name: INFLUXDB_ADMIN_USER
+          value: "admin"
+        - name: INFLUXDB_ADMIN_PASSWORD
+          value: "adminpass"
+        - name: INFLUXDB_REPORTING_DISABLED
+          value: "true"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: telegraf
+  name: telegraf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: telegraf
+  template:
+    metadata:
+      labels:
+        run: telegraf
+    spec:
+      volumes:
+      - name: telegrafconf
+        configMap:
+          name: telegraf
+      containers:
+      - image: vsananalytics/telegraf-vsan:0.0.7
+        name: telegraf
+        volumeMounts:
+          - mountPath: /etc/telegraf
+            name: telegrafconf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: influxdb
+  name: influxdb
+spec:
+  ports:
+  - port: 8086
+    protocol: TCP
+    targetPort: 8086
+  selector:
+    run: influxdb
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: grafana
+  name: grafana
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    run: grafana
+  type: LoadBalancer
