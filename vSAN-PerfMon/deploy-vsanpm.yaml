@@ -17,21 +17,21 @@ spec:
         run: grafana
     spec:
       containers:
-      - image: ragazzilab/grafana-vsan:6.1.6 #grafana/grafana:6.1.6
+      - image: ragazzilab/grafana-vsan:latest #grafana/grafana:6.1.6
         name: grafana
         ports:
         - containerPort: 3000
-        # env:  Moved to image
-        # - name: GF_SECURITY_ADMIN_USER
-        #   value: "admin"
-        # - name: GF_SECURITY_ADMIN_PASSWORD
-        #   value: "admin"
-        # - name: GF_AUTH_ANONYMOUS_ENABLED
-        #   value: "true"
-        # - name: GF_AUTH_ANONYMOUS_ORG_NAME
-        #   value: "Main Org."
-        # - name: GF_AUTH_ANONYMOUS_ORG_ROLE
-        #   value: "Editor"
+        env:  Moved to image
+        - name: GF_SECURITY_ADMIN_USER
+          value: "admin"
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: "admin"
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "true"
+        - name: GF_AUTH_ANONYMOUS_ORG_NAME
+          value: "Main Org."
+        - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+          value: "Editor"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
