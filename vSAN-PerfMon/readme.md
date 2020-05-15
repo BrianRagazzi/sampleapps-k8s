@@ -1,4 +1,4 @@
-### vSAN Performance Metrics
+# vSAN Performance Metrics
 * Inspired by vSAN Performance Monitor Fling
 * https://flings.vmware.com/vsan-performance-monitor
 
