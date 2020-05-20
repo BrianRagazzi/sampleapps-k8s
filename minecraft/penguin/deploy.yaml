@@ -14,11 +14,11 @@ spec:
   template:
     metadata:
       annotations:
-        backup.velero.io/backup-volumes: vol-vsan-penguin
-        pre.hook.backup.velero.io/command: '["rcon-cli", "save-off"]'
-        pre.hook.backup.velero.io/container: penguin
-        post.hook.backup.velero.io/command: '["rcon-cli", "save-on"]'
-        post.hook.backup.velero.io/container: penguin
+        # backup.velero.io/backup-volumes: vol-vsan-penguin
+        # pre.hook.backup.velero.io/command: '["rcon-cli", "save-off"]'
+        # pre.hook.backup.velero.io/container: penguin
+        # post.hook.backup.velero.io/command: '["rcon-cli", "save-on"]'
+        # post.hook.backup.velero.io/container: penguin
       labels:
         run: penguin
     spec:

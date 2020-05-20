@@ -1,0 +1,86 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vol-vsan-synctest-claim
+spec:
+  storageClassName: vsan
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       storage: 5Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: synctest
+  name: synctest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: synctest
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: synctest
+    spec:
+      volumes:
+      - name: vol-vsan-synctest
+        persistentVolumeClaim:
+          claimName: vol-vsan-synctest-claim
+      - name: plugins
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/bukkit-plugins/1.14.4
+      - name: source
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/survive3
+      initContainers:
+      - image: itzg/mc-backup
+        name: syncdata
+        command: ['sh', '-c', 'cp -Rv /backups/* /data/']
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-vsan-synctest
+          - mountPath: "/backups"
+            name: source
+      containers:
+      - image: itzg/minecraft-server
+        name: synctest
+        envFrom:
+        - configMapRef:
+            name: synctest-config
+        resources:
+          requests:
+            memory: "2Gi"
+        ports:
+        - containerPort: 25565
+          name: main
+        readinessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 240
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - mcstatus
+            - localhost
+            - ping
+          initialDelaySeconds: 240
+          periodSeconds: 5
+        volumeMounts:
+          - mountPath: "/data"
+            name: vol-vsan-synctest
+          - mountPath: "/plugins"
+            name: plugins
+            readOnly: true

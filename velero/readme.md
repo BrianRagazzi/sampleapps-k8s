@@ -1,7 +1,6 @@
 
 ### Install
 
-`
 `velero install \
     --provider aws \
     --plugins velero/velero-plugin-for-aws:v1.0.0 \
@@ -18,15 +17,20 @@
 * `/var/vcap/data/kubelet/pods`
 * confirm that the restic pods are running and not in CrashLoopBackOffve
 
-### Upgrade to velero 1.3
+### Upgrade to velero 1.3.2
 kubectl set image deployment/velero \
-    velero=velero/velero:v1.3.0 \
+    velero=velero/velero:v1.3.2 \
     --namespace velero
 
 kubectl set image daemonset/restic \
-    restic=velero/velero:v1.3.0 \
+    restic=velero/velero:v1.3.2 \
     --namespace velero
 
+
+### Add vSphere Plugin
+velero plugin add vsphereveleroplugin/velero-plugin-for-vsphere:1.0.0
+
+velero snapshot-location create vsl-vsphere --provider velero.io/vsphere
 
 ### Create a Backup
 

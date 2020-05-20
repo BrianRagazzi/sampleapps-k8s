@@ -40,5 +40,9 @@ spec:
     protocol: TCP
     targetPort: 8123
     name: http
+  - port: 8000
+    name: cloudcmd
+    protocol: TCP
+    targetPort: 8000
   selector:
     run: survive4

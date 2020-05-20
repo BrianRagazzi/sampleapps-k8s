@@ -3,11 +3,11 @@ data:
   EULA: "true"
   VERSION: 1.15.2 #1.14.4 # 1.12.2
   FORGEVERSION: RECOMMENDED
-  TYPE: VANILLA #, FORGE, SPIGOT, PAPER
+  TYPE: PAPER # VANILLA, FORGE, SPIGOT, PAPER
   SERVER_NAME: "survive2"
   MEMORY: "1G"
   BUILD_FROM_SOURCE: "true" #Spigot
-  MOTD: "survive2 - Vanilla on K8s"
+  MOTD: "survive2 - Paper on K8s"
   ONLINE_MODE: "false" # false for bungeecord
   SRC_DIR: /data #Backup Source Folder
   BACKUP_INTERVAL: "60"

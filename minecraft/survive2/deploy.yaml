@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       annotations:
-        backup.velero.io/backup-volumes: vol-vsan-survive2
+        # backup.velero.io/backup-volumes: vol-vsan-survive2
         pre.hook.backup.velero.io/command: '["rcon-cli", "save-off"]'
         pre.hook.backup.velero.io/container: survive2
         post.hook.backup.velero.io/command: '["rcon-cli", "save-on"]'
@@ -26,10 +26,10 @@ spec:
       - name: vol-vsan-survive2
         persistentVolumeClaim:
           claimName: vol-vsan-survive2-claim
-      # - name: plugins
-      #   nfs:
-      #     server: 192.168.96.20
-      #     path: /nfs/kubevols/bukkit-plugins/1.15.1
+      - name: plugins
+        nfs:
+          server: 192.168.96.20
+          path: /nfs/kubevols/bukkit-plugins/1.15.2
       # - name: source
       #   nfs:
       #     server: 192.168.96.20
@@ -55,6 +55,8 @@ spec:
         ports:
         - containerPort: 25565
           name: main
+        - containerPort: 8123
+          name: dynmap
         readinessProbe:
           exec:
             command:
@@ -74,9 +76,9 @@ spec:
         volumeMounts:
           - mountPath: "/data"
             name: vol-vsan-survive2
-          # - mountPath: "/plugins"
-          #   name: plugins
-          #   readOnly: true
+          - mountPath: "/plugins"
+            name: plugins
+            readOnly: true
       - name: cloudcmd
         image: coderaiser/cloudcmd
         volumeMounts:

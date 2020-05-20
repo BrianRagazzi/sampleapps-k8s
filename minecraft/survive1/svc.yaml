@@ -35,9 +35,9 @@ spec:
     protocol: TCP
     targetPort: 25565
     name: minecraft
-  - port: 80
+  - port: 8123
     protocol: TCP
     targetPort: 8123
-    name: http
+    name: dynmap
   selector:
     run: survive1

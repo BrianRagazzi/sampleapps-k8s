@@ -1,29 +1,12 @@
 ---
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: vol-nfs-unifi
-  labels:
-    type: nfs
-    app: unifi
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: 192.168.96.20
-    path: /nfs/kubevols/unificonfig
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: vol-nfs-unifi-claim
+  name: vol-vsan-unifi-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: vsan
 spec:
-  selector:
-    matchLabels:
-      app: unifi
+  storageClassName: vsan
   accessModes:
   - ReadWriteOnce
   resources:

@@ -42,6 +42,8 @@ spec:
         ports:
         - containerPort: 25565
           name: main
+        - containerPort: 80
+          name: dynmap
         readinessProbe:
           exec:
             command:
