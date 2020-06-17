@@ -1,0 +1,12 @@
+[Global]
+insecure-flag = "true"
+cluster-id = "default/dev1"
+
+[VirtualCenter "vcsa.ragazzilab.com"]
+user = "administrator@vsphere.local"
+password = "VMware1!"
+datacenters = "attic"
+port = "443"
+
+[Network]
+public-network = "VLAN104-KUBE"

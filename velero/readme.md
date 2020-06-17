@@ -15,15 +15,15 @@
 * `kubectl edit ds restic -n velero`
 * Locate the kubelet pods hostpath and adjust it to
 * `/var/vcap/data/kubelet/pods`
-* confirm that the restic pods are running and not in CrashLoopBackOffve
+* confirm that the restic pods are running and not in CrashLoopBackOff
 
-### Upgrade to velero 1.3.2
+### Upgrade to velero 1.4.0
 kubectl set image deployment/velero \
-    velero=velero/velero:v1.3.2 \
+    velero=velero/velero:v1.4.0 \
     --namespace velero
 
 kubectl set image daemonset/restic \
-    restic=velero/velero:v1.3.2 \
+    restic=velero/velero:v1.4.0 \
     --namespace velero
 
 
