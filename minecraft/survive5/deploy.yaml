@@ -26,10 +26,10 @@ spec:
       - name: vol-vsan-survive5
         persistentVolumeClaim:
           claimName: vol-vsan-survive5-claim
-      - name: plugins
-        nfs:
-          server: 192.168.96.20
-          path: /nfs/kubevols/bukkit-plugins/1.15.2.pre
+      # - name: plugins
+      #   nfs:
+      #     server: 192.168.96.20
+      #     path: /nfs/kubevols/bukkit-plugins/1.15.2.pre
       # - name: source
       #   nfs:
       #     server: 192.168.96.20
@@ -76,9 +76,9 @@ spec:
         volumeMounts:
           - mountPath: "/data"
             name: vol-vsan-survive5
-          - mountPath: "/plugins"
-            name: plugins
-            readOnly: true
+          # - mountPath: "/plugins"
+          #   name: plugins
+          #   readOnly: true
       - name: cloudcmd
         image: coderaiser/cloudcmd
         volumeMounts:
