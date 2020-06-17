@@ -4,7 +4,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: vol-vsan-survive2-claim
   annotations:
-    volume.beta.kubernetes.io/storage-class: vsan
+    volume.beta.kubernetes.io/storage-class: vsan-csi
 spec:
   accessModes:
   - ReadWriteOnce
