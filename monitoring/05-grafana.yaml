@@ -1,0 +1,98 @@
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: grafana-storage
+# spec:
+#   accessModes:
+#   - ReadWriteOnce
+#   resources:
+#      requests:
+#        storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: grafana
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: grafana
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: grafana
+    spec:
+      volumes:
+        - name: grafana-storage
+          emptyDir: {}
+        #   persistentVolumeClaim:
+        #     claimName: grafana-storage
+        - name: grafana-datasources
+          configMap:
+              name: grafana-datasources
+        # - name: grafana-dashboards
+        #   configMap:
+        #       defaultMode: 420
+        #       name: grafana-dashboards
+        # - name: grafana-prov-dashboards
+        #   configMap:
+        #       name: grafana-prov-dashboards
+      containers:
+      - image: grafana/grafana:latest
+        name: grafana
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+        volumeMounts:
+          - mountPath: /var/lib/grafana
+            name: grafana-storage
+            readOnly: false
+          - mountPath: /etc/grafana/provisioning/datasources
+            name: grafana-datasources
+            readOnly: false
+          # - mountPath: /etc/grafana/provisioning/dashboards
+          #   name: grafana-prov-dashboards
+          #   readOnly: false
+          # - mountPath: /var/lib/grafana/dashboards
+          #   name: grafana-dashboards
+          #   readOnly: false
+        env:
+        - name: GF_SECURITY_ADMIN_USER
+          value: "admin"
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: "admin"
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "true"
+        - name: GF_AUTH_ANONYMOUS_ORG_NAME
+          value: "Main Org."
+        - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+          value: "Editor"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: grafana
+  name: grafana
+  annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port:   '3000'
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    run: grafana
+  type: LoadBalancer
