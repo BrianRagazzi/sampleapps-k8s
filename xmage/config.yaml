@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: xmage-config
 data:
-  XMAGE_DOCKER_SERVER_ADDRESS: "xmage.minecraft.ragazzilab.com"
+  XMAGE_DOCKER_SERVER_ADDRESS: "xmage.ragazzilab.com"
   XMAGE_DOCKER_PORT: "17171"
   XMAGE_DOCKER_SECONDARY_BIND_PORT: "17179"
   XMAGE_DOCKER_MAX_SECONDS_IDLE: "600"

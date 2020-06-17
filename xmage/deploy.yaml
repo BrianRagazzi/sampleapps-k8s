@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         run: xmage
+      annotations:
+        backup.velero.io/backup-volumes: xmage-db,xmage-saved
     spec:
       volumes:
       - name: xmage-db
@@ -22,7 +24,7 @@ spec:
         persistentVolumeClaim:
           claimName: vol-vsan-xmage-saved
       containers:
-      - image: ragazzilab/docker-xmage-alpine:latest
+      - image: flippyboy/xmage-alpine #ragazzilab/docker-xmage-alpine:latest
         imagePullPolicy: Always
         name: xmage
         ports:
@@ -33,6 +35,11 @@ spec:
         envFrom:
         - configMapRef:
             name: xmage-config
+        volumeMounts:
+        - mountPath: "/xmage/mage-server/db"
+          name: xmage-db
+        - mountPath: "/xmage/mage-server/saved"
+          name: xmage-saved
         resources:
           requests:
             memory: "2Gi"
