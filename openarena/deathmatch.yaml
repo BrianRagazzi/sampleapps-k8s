@@ -1,0 +1,64 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: openarena
+  name: openarena
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: openarena
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: openarena
+    spec:
+      volumes:
+      - name: server1conf
+        configMap:
+          name: server1conf
+      - name: maprotation1conf
+        configMap:
+          name: dm-maprotation1conf # ctf-maprotation1conf
+      - name: motdconf
+        configMap:
+          name: dm-motdconf
+      containers:
+      - image: fgracia/openarena
+        volumeMounts:
+          - mountPath: /data/server1.cfg
+            name: server1conf
+          - mountPath: /data/maprotation1.cfg
+            name: maprotation1conf
+          - mountPath: /data/motd.cfg
+            name: motdconf
+        name: openarena
+        resources:
+          requests:
+            memory: "1Gi"
+        ports:
+        - containerPort: 27950
+          name: ninefifty
+        - containerPort: 27960
+          name: ninesixty
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openarena-dm
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 27950
+    name: ninefifty
+    protocol: TCP
+    targetPort: 27950
+  - port: 27960
+    name: ninesixty
+    protocol: TCP
+    targetPort: 27960
+  selector:
+    run: openarena
