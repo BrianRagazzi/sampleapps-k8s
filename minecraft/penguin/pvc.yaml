@@ -6,6 +6,7 @@ metadata:
   annotations:
     volume.beta.kubernetes.io/storage-class: vsan
 spec:
+  storageClassName: vsan
   accessModes:
   - ReadWriteOnce
   resources:

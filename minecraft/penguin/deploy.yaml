@@ -14,11 +14,11 @@ spec:
   template:
     metadata:
       annotations:
-        # backup.velero.io/backup-volumes: vol-vsan-penguin
-        # pre.hook.backup.velero.io/command: '["rcon-cli", "save-off"]'
-        # pre.hook.backup.velero.io/container: penguin
-        # post.hook.backup.velero.io/command: '["rcon-cli", "save-on"]'
-        # post.hook.backup.velero.io/container: penguin
+        backup.velero.io/backup-volumes: vol-vsan-penguin
+        pre.hook.backup.velero.io/command: '["rcon-cli", "save-off"]'
+        pre.hook.backup.velero.io/container: penguin
+        post.hook.backup.velero.io/command: '["rcon-cli", "save-on"]'
+        post.hook.backup.velero.io/container: penguin
       labels:
         run: penguin
     spec:
@@ -55,6 +55,8 @@ spec:
         ports:
         - containerPort: 25565
           name: main
+        - containerPort: 80
+          name: dynmap
         readinessProbe:
           exec:
             command:
