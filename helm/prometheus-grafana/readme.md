@@ -9,3 +9,7 @@ kubectl expose deploy prometheus-operator-grafana --name=prometheus-operator-gra
 
 #Expose Service (NodePort)
 kubectl expose deploy prometheus-operator-grafana --name=prometheus-operator-grafana-np --port=80 --target-port=3000 -n monitoring --selector=app.kubernetes.io/name=grafana --type=NodePort
+
+
+
+k

@@ -3,52 +3,52 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: survive5
-  name: survive5
+    run: survive3
+  name: survive3
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: survive5
+      run: survive3
   strategy: {}
   template:
     metadata:
       annotations:
-        backup.velero.io/backup-volumes: vol-vsan-survive5
+        backup.velero.io/backup-volumes: vol-vsan-survive3
         pre.hook.backup.velero.io/command: '["rcon-cli", "save-off"]'
-        pre.hook.backup.velero.io/container: survive5
+        pre.hook.backup.velero.io/container: survive3
         post.hook.backup.velero.io/command: '["rcon-cli", "save-on"]'
-        post.hook.backup.velero.io/container: survive5
+        post.hook.backup.velero.io/container: survive3
       labels:
-        run: survive5
+        run: survive3
     spec:
       volumes:
-      - name: vol-vsan-survive5
+      - name: vol-vsan-survive3
         persistentVolumeClaim:
-          claimName: vol-vsan-survive5-claim
+          claimName: vol-vsan-survive3-claim
       - name: plugins
         nfs:
           server: 192.168.96.20
-          path: /nfs/kubevols/bukkit-plugins/1.15.2.pre
+          path: /nfs/kubevols/bukkit-plugins/1.16.1
       # - name: source
       #   nfs:
       #     server: 192.168.96.20
-      #     path: /nfs/kubevols/survive5
+      #     path: /nfs/kubevols/survive3
       # initContainers:
       # - image: itzg/mc-backup
       #   name: syncdata
       #   command: ['sh', '-c', 'cp -Rv /backups/* /data/']
       #   volumeMounts:
       #     - mountPath: "/data"
-      #       name: vol-vsan-survive5
+      #       name: vol-vsan-survive3
       #     - mountPath: "/backups"
       #       name: source
       containers:
       - image: itzg/minecraft-server
-        name: survive5
+        name: survive3
         envFrom:
         - configMapRef:
-            name: survive5-config
+            name: survive3-config
         resources:
           requests:
             memory: "2Gi"
@@ -57,25 +57,25 @@ spec:
           name: main
         - containerPort: 80
           name: dynmap
-        readinessProbe:
-          exec:
-            command:
-            - mcstatus
-            - localhost
-            - ping
-          initialDelaySeconds: 300
-          periodSeconds: 5
-        livenessProbe:
-          exec:
-            command:
-            - mcstatus
-            - localhost
-            - ping
-          initialDelaySeconds: 300
-          periodSeconds: 5
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #     - mc-monitor
+        #     - status
+        #     - localhost
+        #   initialDelaySeconds: 300
+        #   periodSeconds: 5
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #     - mc-monitor
+        #     - stats
+        #     - localhost
+        #   initialDelaySeconds: 300
+        #   periodSeconds: 5
         volumeMounts:
           - mountPath: "/data"
-            name: vol-vsan-survive5
+            name: vol-vsan-survive3
           - mountPath: "/plugins"
             name: plugins
             readOnly: true
@@ -83,7 +83,7 @@ spec:
         image: coderaiser/cloudcmd
         volumeMounts:
           - mountPath: "/data"
-            name: vol-vsan-survive5
+            name: vol-vsan-survive3
         ports:
         - containerPort: 8000
           name: cloudcmd
