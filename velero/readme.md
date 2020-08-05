@@ -3,7 +3,7 @@
 
 `velero install \
     --provider aws \
-    --plugins velero/velero-plugin-for-aws:v1.0.0 \
+    --plugins velero/velero-plugin-for-aws:v1.1.0 \
     --bucket backup-mc \
     --secret-file ./credentials-velero \
     --use-volume-snapshots=false \

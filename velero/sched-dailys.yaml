@@ -58,3 +58,30 @@ spec:
       matchLabels:
         run: penguin
     ttl: 168h0m0s
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: bungeecord-daily
+spec:
+  schedule: '50 0 * * *'
+  template:
+    hooks: {}
+    includedNamespaces:
+    - mc
+    labelSelector:
+      matchLabels:
+        run: bungeecord
+    ttl: 168h0m0s
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: xmage-daily
+spec:
+  schedule: '10 0 * * *'
+  template:
+    hooks: {}
+    includedNamespaces:
+    - xmage
+    ttl: 168h0m0s

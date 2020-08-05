@@ -3,14 +3,13 @@ kind: BackupStorageLocation
 metadata:
   labels:
     component: velero
-  name: mc1
+  name: games
   namespace: velero
 spec:
-  accessMode: ReadOnly
   config:
     region: minio
     s3ForcePathStyle: "true"
-    s3Url: http://192.168.105.72:9000
+    s3Url: http://192.168.100.176:9000
   objectStorage:
-    bucket: backup-mc
+    bucket: backup-games
   provider: aws

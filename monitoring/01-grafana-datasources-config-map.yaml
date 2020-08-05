@@ -11,10 +11,19 @@ data:
             {
                "access":"proxy",
                 "editable": true,
-                "name": "prometheus",
+                "name": "prometheus-local",
                 "orgId": 1,
                 "type": "prometheus",
-                "url": "http://prometheus-service:8080",
+                "url": "http://prom-np:80",
+                "version": 1
+            },
+            {
+               "access":"proxy",
+                "editable": true,
+                "name": "prometheus-games",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://192.168.104.134:80",
                 "version": 1
             }
         ]

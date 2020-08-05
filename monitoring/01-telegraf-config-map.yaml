@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: telegraf
   labels:
-    namee: teleegrafconf
+    name: teleegrafconf
   namespace: monitoring
 data:
   telegraf.conf: |

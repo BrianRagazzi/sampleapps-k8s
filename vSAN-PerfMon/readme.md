@@ -3,6 +3,10 @@
 * https://flings.vmware.com/vsan-performance-monitor
 
 
+## telegraf.conf
+The sample includes collection points for vSphere in addition to just vSAN
+
+
 ## Prereqs
 * Create a StorageClass in the cluster
 * Update the storageClassName value in the 'deploy-vsanpm.yaml' file to match your sc name

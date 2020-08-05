@@ -4,7 +4,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: vol-vsan-influxdb-storage-claim
 spec:
-  storageClassName: vsan
+  storageClassName: k8s-vsan-storage-policy #vsan
   accessModes:
   - ReadWriteOnce
   resources:

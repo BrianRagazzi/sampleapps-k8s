@@ -1,59 +1,69 @@
-# ---
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: grafana-storage
-# spec:
-#   accessModes:
-#   - ReadWriteOnce
-#   resources:
-#      requests:
-#        storage: 2Gi
+---
+apiVersion: v1
+kind: Secret
+data:
+  admin-password: YWRtaW4=
+  admin-username: YWRtaW4=
+metadata:
+  name: grafana
+  namespace: monitoring
+type: Opaque
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-storage
+  namespace: monitoring
+spec:
+  storageClassName: k8s-vsan-storage-policy #vsan
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       storage: 2Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    run: grafana
   name: grafana
+  namespace: monitoring
+  labels:
+    app: grafana
+    component: core
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: grafana
-  strategy: {}
+      app: grafana
   template:
     metadata:
+      annotations:
+        backup.velero.io/backup-volumes: grafana-storage
       labels:
-        run: grafana
+        app: grafana
+        component: core
     spec:
       volumes:
         - name: grafana-storage
-          emptyDir: {}
-        #   persistentVolumeClaim:
-        #     claimName: grafana-storage
+          #emptyDir: {}
+          persistentVolumeClaim:
+            claimName: grafana-storage
         - name: grafana-datasources
           configMap:
               name: grafana-datasources
-        # - name: grafana-dashboards
-        #   configMap:
-        #       defaultMode: 420
-        #       name: grafana-dashboards
-        # - name: grafana-prov-dashboards
-        #   configMap:
-        #       name: grafana-prov-dashboards
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
       containers:
       - image: grafana/grafana:latest
         name: grafana
-        ports:
-        - containerPort: 3000
+        imagePullPolicy: IfNotPresent
+        # ports:
+        # - containerPort: 3000
         resources:
           limits:
-            memory: "2Gi"
-            cpu: "1000m"
-          requests:
             memory: "1Gi"
-            cpu: "500m"
+            cpu: "1000m"
         volumeMounts:
           - mountPath: /var/lib/grafana
             name: grafana-storage
@@ -67,23 +77,36 @@ spec:
           # - mountPath: /var/lib/grafana/dashboards
           #   name: grafana-dashboards
           #   readOnly: false
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 3000
         env:
-        - name: GF_SECURITY_ADMIN_USER
-          value: "admin"
-        - name: GF_SECURITY_ADMIN_PASSWORD
-          value: "admin"
         - name: GF_AUTH_ANONYMOUS_ENABLED
           value: "true"
         - name: GF_AUTH_ANONYMOUS_ORG_NAME
           value: "Main Org."
         - name: GF_AUTH_ANONYMOUS_ORG_ROLE
           value: "Editor"
+        - name: GF_AUTH_BASIC_ENABLED
+          value: "true"
+        - name: GF_SECURITY_ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: grafana
+              key: admin-username
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: grafana
+              key: admin-password
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    run: grafana
+    app: grafana
+    component: core
   name: grafana
   annotations:
       prometheus.io/scrape: 'true'
@@ -94,5 +117,6 @@ spec:
     protocol: TCP
     targetPort: 3000
   selector:
-    run: grafana
+    app: grafana
+    component: core
   type: LoadBalancer
