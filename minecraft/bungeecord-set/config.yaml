@@ -5,3 +5,82 @@ data:
 kind: ConfigMap
 metadata:
   name: bungeecord-config
+  labels:
+    run: bungecord
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bungee-config
+  labels:
+    run: bungeecord
+data:
+  config.yml: |
+    forge_support: false
+    connection_throttle_limit: 3
+    online_mode: true
+    log_commands: true
+    listeners:
+    - query_port: 25565
+      motd: 'penguin.epicgamer.org'
+      priorities:
+      - survive4
+      bind_local_address: true
+      tab_list: GLOBAL_PING
+      query_enabled: false
+      host: 0.0.0.0:25565
+      forced_hosts:
+        pvp.md-5.net: pvp
+      max_players: 100
+      tab_size: 60
+      ping_passthrough: false
+      force_default_server: true
+      proxy_protocol: false
+    connection_throttle: 4000
+    groups:
+      md_5:
+      - admin
+      nerobrian:
+      - admin
+    log_pings: true
+    ip_forward: true
+    prevent_proxy_connections: false
+    network_compression_threshold: 256
+    # stats: f9a26fc1-33ab-49d8-8570-8d2ddcacb9b6
+    disabled_commands:
+    - op
+    - kick
+    - stop
+    - deop
+    timeout: 30000
+    permissions:
+      default:
+      - bungeecord.command.server
+      - bungeecord.command.list
+      admin:
+      - bungeecord.command.alert
+      - bungeecord.command.end
+      - bungeecord.command.ip
+      - bungeecord.command.reload
+    servers:
+      survive4:
+        motd: '&1Survive4'
+        address: survive4-svc:25565
+        restricted: false
+      survive5:
+        motd: '&1Survive5'
+        address: survive5-svc:25565
+        restricted: false
+      survive1:
+        motd: '&1Survive1'
+        address: survive1-svc:25565
+        restricted: false
+      # mansion:
+      #   motd: '&1Mansion'
+      #   address: mansion-svc:25565
+      #   restricted: false
+      # penguin:
+      #   motd: '&1Penguin'
+      #   address: penguin-svc:25565
+      #   restricted: false
+    player_limit: 100
