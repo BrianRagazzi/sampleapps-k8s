@@ -10,3 +10,7 @@ Pass parsms:
 * persistence.subPath (if necessary)
 * service.type=LoadBalancer
 * networkPolicy.allowExternal=true
+
+
+kubectl apply -n minio -f minio-nfs-pvc.yaml
+helm install minio --values values.yaml --namespace minio stable/minio
