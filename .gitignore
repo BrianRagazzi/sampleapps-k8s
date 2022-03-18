@@ -3,3 +3,4 @@ refresh*.bat
 refresh*.sh
 private*.*
 *.crt
+.DS_Store

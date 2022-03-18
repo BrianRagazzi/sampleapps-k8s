@@ -38,4 +38,4 @@ spec:
   - port: 80
   selector:
     app: helloworld35
-  type: NodePort
+  type: LoadBalancer

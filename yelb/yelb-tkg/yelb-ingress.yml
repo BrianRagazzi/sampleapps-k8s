@@ -1,16 +1,17 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: yelb-ingress
   annotations:
-    ingress.kubernetes.io/rewrite-target: /
-    ncp/use-regex: "true"
-    kubernetes.io/ingress-class: nsx
+    kubernetes.io/ingress.class: contour
+  name: yelb-ingress
+  labels:
+    app: yelb-ui
+    tier: frontend
 spec:
   rules:
   - http:
       paths:
-      - path: /yelb/*
+      - path: /yelb
         backend:
           serviceName: yelb-ui
           servicePort: 80

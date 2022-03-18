@@ -1,0 +1,12 @@
+
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: yelb-httpproxy
+spec:
+  routes:
+    - conditions:
+      - prefix: /yelb
+      services:
+        - name: yelb-ui
+          port: 80

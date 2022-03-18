@@ -17,13 +17,19 @@
 * `/var/vcap/data/kubelet/pods`
 * confirm that the restic pods are running and not in CrashLoopBackOff
 
-### Upgrade to velero 1.4.0
+### Upgrade to velero 1.5.1
+#### Upgrade client component first
+
+#### Update Velero CRDs for v1.5.1:
+velero install --crds-only --dry-run -o yaml | kubectl apply -f -
+
+#### Upgrade images
 kubectl set image deployment/velero \
-    velero=velero/velero:v1.4.0 \
+    velero=velero/velero:v1.5.1 \
     --namespace velero
 
 kubectl set image daemonset/restic \
-    restic=velero/velero:v1.4.0 \
+    restic=velero/velero:v1.5.1 \
     --namespace velero
 
 

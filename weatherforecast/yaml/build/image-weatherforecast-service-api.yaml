@@ -1,0 +1,18 @@
+apiVersion: kpack.io/v1alpha2
+kind: Image
+metadata:
+  name: weatherforecast-service-api
+  namespace: default
+spec:
+  tag: harbor.wesleyreisz.com/rrsc/weatherforecast-service-api
+  #additionalTags:
+  #- harbor.wesleyreisz.com/rrsc/spring-petclinic:nightly
+  serviceAccountName: kpack-service-account
+  builder:
+    name: builder
+    kind: Builder
+  source:
+    git:
+      url: https://bitbucket.org/wesreisz/weatherforecast-kpack.git
+      revision: main
+    subPath: src/weatherforecast-service/
