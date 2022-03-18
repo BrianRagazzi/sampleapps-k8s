@@ -2,11 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: weatherforecast-service
-  namespace: weatherforecast-stage
+  namespace: weatherforecast
 spec:
   selector:
     app: weatherforecast-api
   ports:
-    - port: 8080 
-      targetPort: 8080 
+    - port: 80
+      targetPort: 8080
   type: LoadBalancer

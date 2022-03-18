@@ -1,10 +1,10 @@
-apiVersion: apps/v1 
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: weatherforecast-api-deployment
-  namespace: weatherforecast-stage
+  namespace: weatherforecast
   labels:
-    app: weatherforecast-api 
+    app: weatherforecast-api
 spec:
   replicas: 3
   selector:
@@ -17,9 +17,9 @@ spec:
     spec:
       containers:
         - image: harbor.wesleyreisz.com/rrsc/weatherforecast-service-api:latest
-          name: weatherforecast-api 
+          name: weatherforecast-api
           ports:
             - containerPort: 8080
           imagePullPolicy: Always
       imagePullSecrets:
-        - name: registry-credentials 
+        - name: registry-credentials
